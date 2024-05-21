@@ -30,7 +30,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   fun setTracker(uri:String,siteId: Int) {
     if (tracker == null) {
       try {
-        Timber.plant(Timber.DebugTree())
+
         tracker = TrackerBuilder.createDefault(uri, siteId)
           .build(mMatomoTracker)
           Log.e(TAG, "initialized successfully! ${tracker}")
@@ -41,6 +41,8 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
     }
   }
+
+
 
 
   // Example method
@@ -121,6 +123,18 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun setVisitorId(visitorId:String) {
     tracker?.setVisitorId(visitorId)
+  }
+
+  @ReactMethod
+  fun setLogger() {
+    Timber.plant(Timber.DebugTree())
+  }
+
+
+  @ReactMethod
+  fun setIsOptedOut(isOptedOut:Boolean) {
+    Log.e(TAG, "An error occurred: ${isOptedOut}")
+    tracker?.setOptOut(isOptedOut);
   }
 
 

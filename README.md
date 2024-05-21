@@ -55,6 +55,10 @@ else{
 setVisitorId("2c534f55fba6cf6e")
 }
 
+ setIsOptedOut(true)
+
+ setLogger()
+
 trackDispatch()
 
 ```
@@ -77,6 +81,9 @@ trackDispatch()
 | setUserId | The setUserId function is used to assign a unique identifier to a user in a React Native application. This identifier can be used to track user-specific actions, behavior, and engagement within the app. | 
 | setVisitorId | The setVisitorId function allows you to manually set a custom visitor ID for tracking purposes within a React Native application.  | 
 | trackDispatch | The trackDispatch methods for tracking events, interactions, and other analytics-related functionalities within a React Native application. However, there isn't a standard trackDispatch method in Matomo tracking libraries, including the one provided by this package | 
+| setIsOptedOut | setIsOptedOut method for disabling Matomo tracking in a React Native application. | 
+| setLogger | setLogger method use for set up logging for Matomo SDK | 
+
 
 <!-- ## Contributing
 

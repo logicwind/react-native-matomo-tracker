@@ -12,6 +12,8 @@ import {
 
 import {
   createTracker,
+  setIsOptedOut,
+  setLogger,
   setUserId,
   setVisitorId,
   trackDispatch,
@@ -27,8 +29,10 @@ import {
 export default function App() {
   const [result] = React.useState<number | undefined>();
 
+  const [optedOut,setOptedOut]=React.useState(false)
+
   React.useEffect(() => {
-    createTracker('your-matomo-url', 1); //Replace 1 with your matomo site id
+    createTracker("your-matomo-url",1) //Replace 1 with your matomo site id
   }, []);
 
   return (
@@ -131,6 +135,25 @@ export default function App() {
             }}
           >
             <Text style={styles.buttonText}>Set Visistor Id</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+            setIsOptedOut(!optedOut)
+            setOptedOut(!optedOut)
+            }}
+          >
+            <Text style={styles.buttonText}>Set Is OptedOut {optedOut?"NO":"OFF"}</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+             setLogger()
+            }}
+          >
+            <Text style={styles.buttonText}>Set Logger</Text>
           </Pressable>
 
           <Pressable

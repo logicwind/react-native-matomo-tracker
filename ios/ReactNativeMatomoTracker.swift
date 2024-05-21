@@ -85,4 +85,17 @@ class ReactNativeMatomoTracker: NSObject {
     func setVisitorId(id:String) {
         matomoTracker?.forcedVisitorId=id
     }
+    
+    @objc(setIsOptedOut:)
+    func setIsOptedOut(isOptedOut:Bool) {
+        matomoTracker?.isOptedOut = isOptedOut;
+    }
+    
+    @objc(setLogger)
+    func setLogger() {
+        matomoTracker?.logger = DefaultLogger(minLevel: .verbose)
+
+    }
+    
+    
 }

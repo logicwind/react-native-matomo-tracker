@@ -60,3 +60,13 @@ export function setUserId(id:String): Promise<number> {
 export function setVisitorId(visitorId:String): Promise<number> {
   return ReactNativeMatomoTracker.setVisitorId(visitorId);
 }
+
+export function setIsOptedOut(isOptedOut:boolean): Promise<number> {
+  return ReactNativeMatomoTracker.setIsOptedOut(isOptedOut);
+}
+
+export function setLogger(): Promise<number> {
+  return ReactNativeMatomoTracker.setLogger();
+}
+
+
