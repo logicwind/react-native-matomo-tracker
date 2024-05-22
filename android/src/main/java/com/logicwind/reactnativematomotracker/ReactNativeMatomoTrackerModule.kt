@@ -4,6 +4,9 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReadableMapKeySetIterator
 import timber.log.Timber
 import org.matomo.sdk.Matomo
 import org.matomo.sdk.Tracker
@@ -13,6 +16,7 @@ import java.net.URL
 import android.content.ContentValues.TAG
 import android.util.Log
 import android.app.Application
+import org.matomo.sdk.extra.DownloadTracker
 
 
 class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
@@ -121,7 +125,9 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   fun trackDownload(category: String,action: String,url: String) {
     if (tracker != null) {
       TrackHelper.track().event(category, action).name(url).with(tracker);
-//    TrackHelper.track().download().with(tracker);
+
+      TrackHelper.track().download().with(tracker);
+
     }
   }
 
@@ -159,16 +165,27 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
 
-  @ReactMethod
-  fun setIsOptedOut(isOptedOut:Boolean) {
-    Log.e(TAG, "An error occurred: ${isOptedOut}")
+    @ReactMethod
+  fun disableTracking() {
+
     if (tracker != null) {
-      tracker?.setOptOut(isOptedOut);
+      tracker?.setOptOut(true);
+    }
+  }
+
+  @ReactMethod
+  fun enableTracking() {
+
+    if (tracker != null) {
+      tracker?.setOptOut(false);
     }
   }
 
 
-  companion object {
+
+
+
+    companion object {
     const val NAME = "ReactNativeMatomoTracker"
   }
 }

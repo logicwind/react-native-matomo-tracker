@@ -12,7 +12,8 @@ import {
 
 import {
   createTracker,
-  setIsOptedOut,
+  disableTracking,
+  enableTracking,
   setLogger,
   setUserId,
   setVisitorId,
@@ -151,11 +152,19 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-            setIsOptedOut(!optedOut)
-            setOptedOut(!optedOut)
+              disableTracking()
             }}
           >
-            <Text style={styles.buttonText}>Set Is OptedOut {optedOut?"NO":"OFF"}</Text>
+            <Text style={styles.buttonText}>Disable Tracking</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              enableTracking()
+            }}
+          >
+            <Text style={styles.buttonText}>Enable Tracking</Text>
           </Pressable>
 
           <Pressable
@@ -166,6 +175,7 @@ export default function App() {
           >
             <Text style={styles.buttonText}>Set Logger</Text>
           </Pressable>
+
 
           <Pressable
             style={styles.button}
