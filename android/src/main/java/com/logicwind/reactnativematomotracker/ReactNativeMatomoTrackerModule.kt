@@ -30,7 +30,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   fun setTracker(uri:String,siteId: Int) {
     if (tracker == null) {
       try {
-        Timber.plant(Timber.DebugTree())
+
         tracker = TrackerBuilder.createDefault(uri, siteId)
           .build(mMatomoTracker)
           Log.e(TAG, "initialized successfully! ${tracker}")
@@ -43,8 +43,16 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
 
+
+
   // Example method
   // See https://reactnative.dev/docs/native-modules-android
+
+  @ReactMethod
+  fun startSession() {
+    tracker?.startNewSession()
+  }
+
   @ReactMethod
   fun createTracker(uri:String,siteId:Int) {
     setTracker(uri,siteId)
@@ -52,75 +60,111 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun trackScreen(screenName:String,title:String) {
-    TrackHelper.track().screen(screenName).title(title).with(tracker)
-
+    if (tracker != null) {
+      TrackHelper.track().screen(screenName).title(title).with(tracker)
+    }
   }
 
   @ReactMethod
   fun trackEvent(category:String,action:String,name:String,value:Float) {
-    TrackHelper.track().event(category, action).name(name).value(value).with(tracker)
-
+    if (tracker != null) {
+      TrackHelper.track().event(category, action).name(name).value(value).with(tracker)
+    }
   }
   @ReactMethod
   fun trackDispatch() {
-    tracker?.dispatch()
+    if (tracker != null) {
+      tracker?.dispatch()
+    }
   }
 
 
   @ReactMethod
   fun trackOutlink(url:String) {
     val validUrl = URL(url)
-    TrackHelper.track()
-      .outlink(validUrl)
-      .with(tracker)
+    if (tracker != null) {
+      TrackHelper.track()
+        .outlink(validUrl)
+        .with(tracker);
+    }
   }
 
   @ReactMethod
   fun trackSearch(keyword:String) {
+    if (tracker != null) {
     TrackHelper.track()
       .search(keyword)
-      .with(tracker)
+      .with(tracker);
+    }
   }
 
   @ReactMethod
   fun trackImpression(contentName:String) {
-    TrackHelper.track()
-      .impression(contentName)
-      .with(tracker)
+    if (tracker != null) {
+      TrackHelper.track()
+        .impression(contentName)
+        .with(tracker);
+    }
   }
 
 
   @ReactMethod
   fun trackInteraction(contentName:String,contentInteraction:String) {
-    TrackHelper.track()
-      .interaction(contentName, contentInteraction)
-      .with(tracker)
+    if (tracker != null) {
+      TrackHelper.track()
+        .interaction(contentName, contentInteraction)
+        .with(tracker)
+    }
   }
 
   @ReactMethod
   fun trackDownload(category: String,action: String,url: String) {
-    TrackHelper.track().event(category, action).name(url).with(tracker)
+    if (tracker != null) {
+      TrackHelper.track().event(category, action).name(url).with(tracker);
 //    TrackHelper.track().download().with(tracker);
+    }
   }
 
   @ReactMethod
   fun setUserId(id:String) {
-    tracker?.setUserId(id);
+    if (tracker != null) {
+      tracker?.setUserId(id);
+    }
   }
 
   @ReactMethod
   fun trackScreens() {
-    TrackHelper.track().screens(Application()).with(tracker);
+    if (tracker != null) {
+      TrackHelper.track().screens(Application()).with(tracker);
+    }
   }
 
   @ReactMethod
   fun trackGoal(goalId:Int,revenue:Float) {
-    TrackHelper.track().goal(goalId).revenue(revenue).with(tracker);
+    if (tracker != null) {
+      TrackHelper.track().goal(goalId).revenue(revenue).with(tracker);
+    }
   }
 
   @ReactMethod
   fun setVisitorId(visitorId:String) {
-    tracker?.setVisitorId(visitorId)
+    if (tracker != null) {
+      tracker?.setVisitorId(visitorId);
+    }
+  }
+
+  @ReactMethod
+  fun setLogger() {
+    Timber.plant(Timber.DebugTree())
+  }
+
+
+  @ReactMethod
+  fun setIsOptedOut(isOptedOut:Boolean) {
+    Log.e(TAG, "An error occurred: ${isOptedOut}")
+    if (tracker != null) {
+      tracker?.setOptOut(isOptedOut);
+    }
   }
 
 

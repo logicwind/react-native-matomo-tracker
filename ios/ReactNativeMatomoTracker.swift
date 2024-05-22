@@ -21,7 +21,13 @@ class ReactNativeMatomoTracker: NSObject {
         matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
     
     }
+   
     
+    @objc(startSession)
+    func startSession() {
+        matomoTracker?.startNewSession()
+     }
+
     
    @objc(trackScreen:withTitle:)
    func trackScreen(screenName: String, title: String) {
@@ -85,4 +91,17 @@ class ReactNativeMatomoTracker: NSObject {
     func setVisitorId(id:String) {
         matomoTracker?.forcedVisitorId=id
     }
+    
+    @objc(setIsOptedOut:)
+    func setIsOptedOut(isOptedOut:Bool) {
+        matomoTracker?.isOptedOut = isOptedOut;
+    }
+    
+    @objc(setLogger)
+    func setLogger() {
+        matomoTracker?.logger = DefaultLogger(minLevel: .verbose)
+
+    }
+    
+    
 }

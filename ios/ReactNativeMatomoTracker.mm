@@ -9,7 +9,7 @@ RCT_EXTERN_METHOD(trackScreen:(NSString *)screenName withTitle:(NSString *)title
 
 RCT_EXTERN_METHOD(trackDispatch)
 
-RCT_EXTERN_METHOD(trackEvent:(NSString *)category withAction:(NSString *)action withName:(NSString *)name withValue:(NSString *)value)
+RCT_EXTERN_METHOD(trackEvent:(NSString *)category withAction:(NSString *)action withName:(NSString *)name withValue:(NSNumber *)value)
 
 RCT_EXTERN_METHOD(trackOutlink:(NSString *)url)
 
@@ -28,6 +28,13 @@ RCT_EXTERN_METHOD(trackScreens)
 RCT_EXTERN_METHOD(trackGoal:(NSInteger)goalId withRevenue:(float *)revenue)
 
 RCT_EXTERN_METHOD(setVisitorId:(NSString *)id)
+
+RCT_EXTERN_METHOD(setIsOptedOut:(BOOL)isOptedOut)
+
+RCT_EXTERN_METHOD(setLogger)
+
+RCT_EXTERN_METHOD(startSession)
+
 
 + (BOOL)requiresMainQueueSetup
 {
