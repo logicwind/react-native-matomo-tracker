@@ -71,6 +71,7 @@ trackDispatch()
 | Name  | Description  |
 |-----------------|-----------------|
 | createTracker | The createTracker function is used to instantiate a tracker object for Matomo analytics within a React Native application. This tracker instance allows developers to track various user interactions and events within their mobile app. |
+| startSession | The startSession method is used to start a new session explicitly within a React Native application.| 
 | trackScreen | The trackScreen method is used to track screen views within a React Native application. Screen tracking allows developers to monitor user navigation and engagement by recording when users view specific screens or pages within the app.| 
 | trackEvent | The trackEvent method is used to track custom events within a React Native application. Event tracking allows developers to monitor and analyze user interactions, such as button clicks, form submissions, or any other custom actions performed by users within the app. | 
 | trackOutlink | The trackOutlink method is used to track clicks on outbound links within a React Native application. Outbound link tracking allows developers to monitor when users click on links that navigate them away from the app to external websites or resources. | 

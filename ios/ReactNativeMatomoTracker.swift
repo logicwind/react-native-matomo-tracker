@@ -21,7 +21,13 @@ class ReactNativeMatomoTracker: NSObject {
         matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
     
     }
+   
     
+    @objc(startSession)
+    func startSession() {
+        matomoTracker?.startNewSession()
+     }
+
     
    @objc(trackScreen:withTitle:)
    func trackScreen(screenName: String, title: String) {

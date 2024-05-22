@@ -69,4 +69,10 @@ export function setLogger(): Promise<number> {
   return ReactNativeMatomoTracker.setLogger();
 }
 
+export function startSession(): Promise<number> {
+  return ReactNativeMatomoTracker.startSession();
+}
+
+
+
 

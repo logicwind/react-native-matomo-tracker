@@ -16,6 +16,7 @@ import {
   setLogger,
   setUserId,
   setVisitorId,
+  startSession,
   trackDispatch,
   trackDownload,
   trackEvent,
@@ -24,6 +25,7 @@ import {
   trackOutlink,
   trackScreen,
   trackSearch,
+
 } from '@logicwind/react-native-matomo-tracker';
 
 export default function App() {
@@ -32,7 +34,7 @@ export default function App() {
   const [optedOut,setOptedOut]=React.useState(false)
 
   React.useEffect(() => {
-    createTracker("your-matomo-url",1) //Replace 1 with your matomo site id
+    createTracker("https://matomo.cappital.co/matomo.php",43) //Replace 1 with your matomo site id
   }, []);
 
   return (
@@ -40,10 +42,19 @@ export default function App() {
       <ScrollView showsHorizontalScrollIndicator={false}>
         <View style={styles.container}>
           <Text>Matomo Tracking {result}</Text>
+           <Pressable
+                     style={styles.button}
+                      onPress={() => {
+                       startSession()
+                      }}
+                    >
+                      <Text style={styles.buttonText}>Start Session</Text>
+             </Pressable>
           <Pressable
             style={styles.button}
             onPress={() => {
               trackScreen('HomeScreen', 'This is test home screen');
+            
             }}
           >
             <Text style={styles.buttonText}>Track Screen</Text>

@@ -33,6 +33,9 @@ RCT_EXTERN_METHOD(setIsOptedOut:(BOOL)isOptedOut)
 
 RCT_EXTERN_METHOD(setLogger)
 
+RCT_EXTERN_METHOD(startSession)
+
+
 + (BOOL)requiresMainQueueSetup
 {
   return NO;
