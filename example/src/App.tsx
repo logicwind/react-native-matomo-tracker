@@ -32,10 +32,9 @@ import {
 export default function App() {
   const [result] = React.useState<number | undefined>();
 
-  const [optedOut,setOptedOut]=React.useState(false)
 
   React.useEffect(() => {
-    createTracker("https://matomo.cappital.co/matomo.php",43) //Replace 1 with your matomo site id
+    createTracker("your-matomo-url",1) //Replace 1 with your matomo site id
   }, []);
 
   return (
