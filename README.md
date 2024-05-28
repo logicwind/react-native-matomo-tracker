@@ -55,12 +55,14 @@ startSession,
 ### createTracker()
 
 The createTracker function is used to instantiate a tracker object for Matomo analytics within a React Native application .It will take `matomo-url` and `siteId` parameter.
+#### note 
+for matomo-url madatory to add `/matomo.php` end of url.
 
 #### Examples
 
 ```js
 
- createTracker("your-matomo-url","siteId")
+ createTracker("https://your-matomo-url/matomo.php","siteId")
 
 ```
 
