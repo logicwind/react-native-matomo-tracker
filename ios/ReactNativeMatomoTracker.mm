@@ -35,6 +35,15 @@ RCT_EXTERN_METHOD(setLogger)
 
 RCT_EXTERN_METHOD(startSession)
 
+RCT_EXTERN_METHOD(disableTracking)
+
+RCT_EXTERN_METHOD(enableTracking)
+
+
+
+
+
+
 
 + (BOOL)requiresMainQueueSetup
 {

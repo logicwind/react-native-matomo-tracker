@@ -46,8 +46,10 @@ class ReactNativeMatomoTracker: NSObject {
     
     @objc(trackOutlink:)
     func trackOutlink(url:String) {
-        let url = URL(string: url)
-        matomoTracker?.track(view: [], url: url)
+//        let url = URL(string: url)
+//        matomoTracker?.track(view: [], url: url)
+        let event = Event(tracker: matomoTracker!, action: ["link"],customTrackingParameters: ["link" : url],isCustomAction: true)
+             matomoTracker?.track(event)
     }
     
     @objc(trackSearch:)
@@ -68,8 +70,10 @@ class ReactNativeMatomoTracker: NSObject {
     
     @objc(trackDownload:withAction:withUrl:)
     func trackDownload(category:String,action:String,url:String) {
-        let downloadURL = URL(string: url)!
-        matomoTracker?.track(eventWithCategory: category,  action: action, name: downloadURL.absoluteString, value: nil)
+//        let downloadURL = URL(string: url)!
+//        matomoTracker?.track(eventWithCategory: category,  action: action, name: downloadURL.absoluteString, value: nil)
+        let event = Event(tracker: matomoTracker!, action: ["download"],customTrackingParameters: ["download" : url],isCustomAction: true)
+             matomoTracker?.track(event)
     }
     
     @objc(setUserId:)
@@ -92,9 +96,14 @@ class ReactNativeMatomoTracker: NSObject {
         matomoTracker?.forcedVisitorId=id
     }
     
-    @objc(setIsOptedOut:)
-    func setIsOptedOut(isOptedOut:Bool) {
-        matomoTracker?.isOptedOut = isOptedOut;
+    @objc(disableTracking)
+    func disableTracking() {
+        matomoTracker?.isOptedOut = true;
+    }
+    
+    @objc(enableTracking)
+    func enableTracking() {
+        matomoTracker?.isOptedOut = false;
     }
     
     @objc(setLogger)
@@ -103,5 +112,7 @@ class ReactNativeMatomoTracker: NSObject {
 
     }
     
+
     
 }
+

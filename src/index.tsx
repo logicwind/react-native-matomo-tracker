@@ -61,9 +61,14 @@ export function setVisitorId(visitorId:String): Promise<number> {
   return ReactNativeMatomoTracker.setVisitorId(visitorId);
 }
 
-export function setIsOptedOut(isOptedOut:boolean): Promise<number> {
-  return ReactNativeMatomoTracker.setIsOptedOut(isOptedOut);
+export function disableTracking(): Promise<number> {
+  return ReactNativeMatomoTracker.disableTracking();
 }
+
+export function enableTracking(): Promise<number> {
+  return ReactNativeMatomoTracker.enableTracking();
+}
+
 
 export function setLogger(): Promise<number> {
   return ReactNativeMatomoTracker.setLogger();
