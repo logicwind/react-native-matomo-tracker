@@ -48,6 +48,7 @@ trackSearch,
 disableTracking,
 enableTracking, 
 startSession,
+trackMediaEvent
 } from '@logicwind/react-native-matomo-tracker';
      
 ```
@@ -193,18 +194,9 @@ setUserId("test@gmail.com")
 
 ### setVisitorId()
 
-By default matomo generate the unique visitor id but if you want custom vistor id then setVisitorId function allows you to manually set a custom visitor ID for tracking purposes within a React Native application . It will take `visitor-id`  parameter.
+By default matomo generate the unique visitor id but if you want custom vistor id then setVisitorId function allows you to manually set a custom visitor ID for tracking purposes within a React Native application . It will take `visitor-id`  parameter. It must be a 16 character long hex string
 
 #### Examples
-
-#### ios
-
-```js
-
-setVisitorId("123e4567-e89b-12d3-a456-426614174000")
-
-```
-#### Android
 
 ```js
 
@@ -260,12 +252,41 @@ setLogger()
 
 ```
 
+### trackMediaEvent()
+
+trackMediaEvent function use to monitor user interactions with media content, such as audio or video files. It allows you to track various events related to media playback, such as play, pause, stop, seek, and complete, providing insights into user engagement with your media assets.
+
+| Parameter      | Description                                               |
+|----------------|-----------------------------------------------------------|
+| mediaId        | (required) A unique id that is always the same while playing a media. As soon as the played media changes.                            |
+| mediaResource  | (required) The URL of the media resource.                            |
+| mediaType      | (required) video or audio depending on the type of the media. You can used MediaType.VIDEO or MediaType.AUDIO                         |
+| mediaTitle     | The name / title of the media.                           |
+| playerName     | The name of the media player, for example html5.                            |
+| mediaStatus    | The time in seconds for how long a user has been playing this media. This number should typically increase when you send a media tracking request. It should be 0 if the media was only visible/impressed but not played. Do not increase this number when a media is paused.                            |
+| mediaLength    | The duration (the length) of the media in seconds. For example if a video is 90 seconds long, the value should be 90.                           |
+| mediaProgress  | The progress / current position within the media. Defines basically at which position within the total length the user is currently playing.                            |
+| mediaTTP       | Defines after how many seconds the user has started playing this media. For example a user might have seen the poster of the video for 30 seconds before a user actually pressed the play button.                            |
+| mediaWidth     | The resolution width of the media in pixels. Only recommended being set for videos.                            |
+| mediaHeight    | The resolution height of the media in pixels. Only recommended being set for videos.                            |
+| mediaFullScreen| Should be 0 or 1 and defines whether the media is currently viewed in full screen. Only recommended being set for videos.                            |
+| mediaSE        | An optional comma separated list of which positions within a media a user has played. For example if the user has viewed position 5s, 10s, 15s and 35s, then you would need to send 5,10,15,35. We recommend to round to the next 5 seconds and not send a value for each second. Internally, Matomo may round to the next 15 or 30 seconds. For performance optimisation we recommend not sending the same position twice. Meaning if you have sent ma_se=10 there is no need to send later ma_se=10,20 but instead only ma_se=20.                             |
+
+
+
+#### Examples
+
+```js
+
+trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100"});
+
+```
  
 
 ## Methods
 
 
-| Method                               | Require Paramter                                          | Android | ios | Android TV | Apple TV |
+| Method                               | Required Parameter                                          | Android | ios | Android TV | Apple TV |
 |--------------------------------------|-----------------------------------------------------------|:-------:|:---:|:----------:|:--------:|
 | [createTracker](#createtracker)      | uri: String, siteId: Number                               |    ✅   |  ✅  |    ✅      |   ✅     |
 | [startSession](#startsession)        | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
@@ -282,6 +303,7 @@ setLogger()
 | [disableTracking](#disabletracking)  | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
 | [enableTracking](#enabletracking)    | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
 | [setLogger](#setlogger)              | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
+| [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String                                            |    ✅   |  ✅  |    ✅      |   ✅     |
 
 
 <!-- ## Contributing

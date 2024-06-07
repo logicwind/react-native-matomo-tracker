@@ -78,6 +78,26 @@ export function startSession(): Promise<number> {
   return ReactNativeMatomoTracker.startSession();
 }
 
+export function trackMediaEvent(
+{siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength="",mediaProgress="",mediaTTP="",mediaWidth="",mediaHeight="",mediaSE="",mediaFullScreen=""}:{  
+  siteId: String,
+  mediaId: String,
+  mediaTitle: String,
+  playerName: String,
+  mediaType: String,
+  mediaResource: String,
+  mediaStatus: String,
+  mediaLength?:String,
+  mediaProgress?:String,
+  mediaTTP?: String,
+  mediaWidth?: String,
+  mediaHeight?: String,
+  mediaSE?: String,
+  mediaFullScreen?:String}): Promise<number> {
+  return ReactNativeMatomoTracker.trackMedia(siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength,mediaProgress,mediaTTP,mediaWidth,mediaHeight,mediaSE,mediaFullScreen);
+}
+
+export const MediaType = { VIDEO: 'video',AUDIO:"audio"};
 
 
 
