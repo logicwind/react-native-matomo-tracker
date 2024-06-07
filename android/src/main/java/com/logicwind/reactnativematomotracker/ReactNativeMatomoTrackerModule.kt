@@ -1,22 +1,21 @@
 package com.logicwind.reactnativematomotracker
 
+import android.app.Application
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.ReadableMapKeySetIterator
-import timber.log.Timber
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.matomo.sdk.Matomo
+import org.matomo.sdk.TrackMe
 import org.matomo.sdk.Tracker
 import org.matomo.sdk.TrackerBuilder
 import org.matomo.sdk.extra.TrackHelper
+import timber.log.Timber
 import java.net.URL
-import android.content.ContentValues.TAG
-import android.util.Log
-import android.app.Application
-import org.matomo.sdk.extra.DownloadTracker
+import java.net.URLEncoder
 
 
 class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
@@ -25,6 +24,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   private val mMatomoTracker: Matomo? = Matomo.getInstance(reactContext)
 
   private var tracker: Tracker? = null
+  private val client = OkHttpClient()
 
   override fun getName(): String {
     return NAME
@@ -37,7 +37,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
         tracker = TrackerBuilder.createDefault(uri, siteId)
           .build(mMatomoTracker)
-          Log.e(TAG, "initialized successfully! ${tracker}")
+        Log.e(TAG, "initialized successfully! ${tracker}")
 
       } catch (e: Exception) {
         Log.e(TAG, "An error occurred: ${e.message}")
@@ -45,12 +45,6 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
     }
   }
-
-
-
-
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
 
   @ReactMethod
   fun startSession() {
@@ -181,8 +175,94 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  @ReactMethod
+  fun trackMedia(
+    siteId: String,
+    mediaId: String,
+    mediaTitle: String,
+    playerName: String,
+    mediaType: String,
+    mediaResource: String,
+    mediaStatus: String,
+    mediaLength:String,
+    mediaProgress:String,
+    mediaTTP: String,
+    mediaWidth: String,
+    mediaHeight: String,
+    mediaSE: String,
+    mediaFullScreen:String
 
+  ) {
 
+    if(mediaStatus=="0") {
+      TrackHelper.track().event(mediaType, "play").name(mediaTitle).with(tracker)
+      trackDispatch()
+    }
+    if(mediaStatus==mediaLength && mediaStatus==mediaProgress) {
+      TrackHelper.track().event(mediaType, "stop").name(mediaTitle).with(tracker)
+      trackDispatch()
+    }
+
+    val baseUrl = tracker?.apiUrl
+    var query = "idsite=${encode(siteId)}" +
+      "&rec=1" +
+      "&r=${generateRandomNumber()}" +
+      "&ma_id=${encode(mediaId)}" +
+      "&ma_ti=${encode(mediaTitle)}" +
+      "&ma_pn=${encode(playerName)}" +
+      "&ma_mt=${encode(mediaType)}" +
+      "&ma_re=${encode(mediaResource)}"+
+      "&ma_st=${encode(mediaStatus)}"+
+      "&_id=${encode(tracker?.visitorId.toString())}"
+
+    if(mediaLength.isNotEmpty()){
+      query=query+ "&ma_le=${encode(mediaLength)}";
+    }
+
+    if(mediaProgress.isNotEmpty()){
+      query=query+  "&ma_ps=${encode(mediaProgress)}";
+    }
+
+    if(mediaWidth.isNotEmpty()){
+      query=query+ "&ma_w=${encode(mediaWidth)}";
+    }
+
+    if(mediaHeight.isNotEmpty()){
+      query=query+  "&ma_h=${encode(mediaHeight)}";
+    }
+
+    if(mediaFullScreen.isNotEmpty()){
+      query=query+ "&ma_fs=${encode(mediaFullScreen)}";
+    }
+
+    if(mediaSE.isNotEmpty()){
+      query=query+  "&ma_se=${encode(mediaSE)}";
+    }
+
+    if(mediaTTP.isNotEmpty()){
+      query=query+ "&ma_ttp=${encode(mediaTTP)}";
+    }
+    try {
+      val urlString = "$baseUrl?$query"
+      val request = Request.Builder()
+        .url(urlString)
+        .build()
+
+      client.newCall(request).execute().use { response ->
+        val responseCode = response.code
+      }
+    }catch (e:Exception){
+      Log.e(TAG, "error : ${e.message}")
+    }
+  }
+
+  private fun generateRandomNumber(): Long {
+    return (Math.random() * Long.MAX_VALUE).toLong()
+  }
+
+  private fun encode(value: String): String {
+    return URLEncoder.encode(value, "UTF-8")
+  }
 
 
     companion object {

@@ -7,10 +7,10 @@ import {
   Pressable,
   ScrollView,
   SafeAreaView,
-  Platform,
 } from 'react-native';
 
 import {
+  MediaType,
   createTracker,
   disableTracking,
   enableTracking,
@@ -23,6 +23,7 @@ import {
   trackEvent,
   trackImpression,
   trackInteraction,
+  trackMediaEvent,
   trackOutlink,
   trackScreen,
   trackSearch,
@@ -32,9 +33,9 @@ import {
 export default function App() {
   const [result] = React.useState<number | undefined>();
 
-
   React.useEffect(() => {
-    createTracker("your-matomo-url",1) //Replace 1 with your matomo site id
+    createTracker("https://your-matomo-url/matomo.php", 1) //Replace 1 with your matomo site id
+
   }, []);
 
   return (
@@ -42,19 +43,20 @@ export default function App() {
       <ScrollView showsHorizontalScrollIndicator={false}>
         <View style={styles.container}>
           <Text>Matomo Tracking {result}</Text>
-           <Pressable
-                     style={styles.button}
-                      onPress={() => {
-                       startSession()
-                      }}
-                    >
-                      <Text style={styles.buttonText}>Start Session</Text>
-             </Pressable>
+
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              startSession()
+            }}
+          >
+            <Text style={styles.buttonText}>Start Session</Text>
+          </Pressable>
           <Pressable
             style={styles.button}
             onPress={() => {
               trackScreen('HomeScreen', 'This is test home screen');
-            
+
             }}
           >
             <Text style={styles.buttonText}>Track Screen</Text>
@@ -138,11 +140,7 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              if (Platform.OS === 'ios') {
-                setVisitorId('123e4567-e89b-12d3-a456-426614174000');
-              } else {
-                setVisitorId('2c534f55fba6cf6e');
-              }
+              setVisitorId('0123456789abcdef');
             }}
           >
             <Text style={styles.buttonText}>Set Visistor Id</Text>
@@ -169,17 +167,26 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-             setLogger()
+              setLogger()
             }}
           >
             <Text style={styles.buttonText}>Set Logger</Text>
           </Pressable>
 
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              trackMediaEvent({ siteId: "siteId", mediaId: Date.now.toString(), mediaTitle: "video media play track", playerName: "test 08", mediaType: MediaType.VIDEO, mediaResource: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", mediaStatus: "100", mediaLength: "100", mediaFullScreen: "1", mediaHeight: "720", mediaWidth: "1080", mediaProgress: "100" });
+            }}
+          >
+            <Text style={styles.buttonText}>Video Play Stop</Text>
+          </Pressable>
 
           <Pressable
             style={styles.button}
             onPress={() => {
-              trackDispatch();
+              trackDispatch()
+
             }}
           >
             <Text style={styles.buttonText}>Track Dispatch</Text>

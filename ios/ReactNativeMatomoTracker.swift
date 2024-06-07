@@ -5,23 +5,27 @@ import MatomoTracker
 class ReactNativeMatomoTracker: NSObject {
 
     var matomoTracker: MatomoTracker?
-
-    
+    var baseURL = "";
+    var _id = "";
     override init() {
             super.init()
        
             // Initialize matomoTracker here or in createTracker method
-
+        _id = newVisitorID()
+        matomoTracker?.forcedVisitorId = _id;
+       
     }
   
     @objc(createTracker:withSiteId:)
     func createTracker(uri:String,siteId:String) {
         let queue = UserDefaultsQueue(UserDefaults.standard, autoSave: true)
-        let dispatcher = URLSessionDispatcher(baseURL: URL(string:uri)!)
-        matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
+         baseURL =  uri
     
+        let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
+        matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
+        matomoTracker?.userId = _id;
     }
-   
+    
     
     @objc(startSession)
     func startSession() {
@@ -46,8 +50,6 @@ class ReactNativeMatomoTracker: NSObject {
     
     @objc(trackOutlink:)
     func trackOutlink(url:String) {
-//        let url = URL(string: url)
-//        matomoTracker?.track(view: [], url: url)
         let event = Event(tracker: matomoTracker!, action: ["link"],customTrackingParameters: ["link" : url],isCustomAction: true)
              matomoTracker?.track(event)
     }
@@ -70,8 +72,6 @@ class ReactNativeMatomoTracker: NSObject {
     
     @objc(trackDownload:withAction:withUrl:)
     func trackDownload(category:String,action:String,url:String) {
-//        let downloadURL = URL(string: url)!
-//        matomoTracker?.track(eventWithCategory: category,  action: action, name: downloadURL.absoluteString, value: nil)
         let event = Event(tracker: matomoTracker!, action: ["download"],customTrackingParameters: ["download" : url],isCustomAction: true)
              matomoTracker?.track(event)
     }
@@ -94,6 +94,7 @@ class ReactNativeMatomoTracker: NSObject {
     @objc(setVisitorId:)
     func setVisitorId(id:String) {
         matomoTracker?.forcedVisitorId=id
+        _id=id
     }
     
     @objc(disableTracking)
@@ -113,6 +114,116 @@ class ReactNativeMatomoTracker: NSObject {
     }
     
 
+    @objc(trackMedia:withMediaId:withMediaTitle:withPlayerName:withMediaType:withMediaResource:withMediaStatus:withMediaLength:withMediaProgress:withMediaTTP:withMediaWidth:withMediaHeight:withMediaSE:withMediaFullScreen:)
+    func trackMediaEvent(
+        siteId: String,
+        mediaId: String,
+        mediaTitle: String,
+        playerName: String,
+        mediaType: String,
+        mediaResource: String,
+        mediaStatus: String,
+        mediaLength:String,
+        mediaProgress:String,
+        mediaTTP: String,
+        mediaWidth: String,
+        mediaHeight: String,
+        mediaSE: String,
+        mediaFullScreen:String
+    ) {
+        
+        if(mediaStatus=="0"){
+            
+            matomoTracker?.track(eventWithCategory:mediaType, action:"play",name: mediaTitle)
+            matomoTracker?.dispatch()
+        }
+
+        if(mediaStatus==mediaLength){
+            matomoTracker?.track(eventWithCategory:mediaType, action:"stop",name: mediaTitle)
+            matomoTracker?.dispatch()
+        }
+        
+
+        var uid =  ""
+        
+        if var userId = matomoTracker?.userId {
+            uid = userId
+        } else {
+            uid = ""
+        }
+        
+        
+        let baseUrl = baseURL
+        var query = "idsite=\(encodeParameter(value: siteId))" +
+                    "&rec=1" +
+                    "&r=\(generateRandomNumber())" +
+                    "&ma_id=\(encodeParameter(value: mediaId))" +
+                    "&ma_ti=\(encodeParameter(value: mediaTitle))" +
+                    "&ma_pn=\(encodeParameter(value: playerName))" +
+                    "&ma_mt=\(encodeParameter(value: mediaType))" +
+                    "&ma_re=\(encodeParameter(value: mediaResource))" +
+                    "&ma_st=\(encodeParameter(value: mediaStatus))" +
+                    "&cid=\(encodeParameter(value: _id))" +
+                    "&uid=\(encodeParameter(value: uid))"
+        
+        
+        
+        if(!mediaLength.isEmpty){
+            query=query+"&ma_le=\(encodeParameter(value: mediaLength))";
+        }
+        
+        if(!mediaProgress.isEmpty){
+            query=query+"&ma_st=\(encodeParameter(value: mediaProgress))";
+        }
+
+        if(!mediaWidth.isEmpty){
+            query=query+"&ma_w=\(encodeParameter(value: mediaWidth))";
+        }
+
+        if(!mediaHeight.isEmpty){
+            query=query+"&ma_h=\(encodeParameter(value: mediaHeight))";
+        }
+
+        if(!mediaFullScreen.isEmpty){
+            query=query+"&ma_fs=\(encodeParameter(value: mediaFullScreen))";
+        }
+        
+        if(!mediaSE.isEmpty){
+            query=query+"&ma_se=\(encodeParameter(value: mediaSE))";
+        }
+        
+        if(!mediaTTP.isEmpty){
+            query=query+"&ma_ttp=\(encodeParameter(value: mediaTTP))";
+        }
+        
+      
+        let urlString = "\(baseUrl)?\(query)"
+
+        if let url = URL(string: urlString) {
+            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                if let httpResponse = response as? HTTPURLResponse {
+                    let statusCode = httpResponse.statusCode
+                }
+            }
+            task.resume()
+        }
+    }
     
+    private func generateRandomNumber() -> UInt64 {
+           return UInt64(arc4random_uniform(UInt32.max))
+       }
+
+    private func encodeParameter(value: String) -> String {
+          return value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+      }
+
+    
+    func newVisitorID() -> String {
+       let uuid = UUID().uuidString
+       let sanitizedUUID = uuid.replacingOccurrences(of: "-", with: "")
+       let start = sanitizedUUID.startIndex
+       let end = sanitizedUUID.index(start, offsetBy: 16)
+       return String(sanitizedUUID[start..<end])
+   }
 }
 
