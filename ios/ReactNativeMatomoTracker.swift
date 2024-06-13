@@ -173,7 +173,7 @@ class ReactNativeMatomoTracker: NSObject {
         }
         
         if(!mediaProgress.isEmpty){
-            query=query+"&ma_st=\(encodeParameter(value: mediaProgress))";
+            query=query+"&ma_ps=\(encodeParameter(value: mediaProgress))";
         }
 
         if(!mediaWidth.isEmpty){
