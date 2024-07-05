@@ -6,6 +6,7 @@ class ReactNativeMatomoTracker: NSObject {
 
     var matomoTracker: MatomoTracker?
     var baseURL = "";
+    var authToken = "";
     var _id = "";
     override init() {
             super.init()
@@ -16,8 +17,9 @@ class ReactNativeMatomoTracker: NSObject {
        
     }
   
-    @objc(createTracker:withSiteId:)
-    func createTracker(uri:String,siteId:String) {
+    @objc(createTracker:withSiteId:withToken:)
+    func createTracker(uri:String,siteId:String,token:String) {
+        authToken = token
         let queue = UserDefaultsQueue(UserDefaults.standard, autoSave: true)
          baseURL =  uri
     
@@ -200,7 +202,14 @@ class ReactNativeMatomoTracker: NSObject {
         let urlString = "\(baseUrl)?\(query)"
 
         if let url = URL(string: urlString) {
-            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                var request = URLRequest(url: url)
+               let device = Device.makeCurrentDevice();
+               let application = Application.makeCurrentApplication()
+               let userAgent = "Darwin/\(device.darwinVersion ?? "Unknown-Version") (\(device.platform); \(device.operatingSystem) \(device.osVersion)), MatomoTrackerSDK/\(MatomoTracker.sdkVersion)\(application.bundleName ?? "Unknown-App")/\(application.bundleShortVersion ?? "Unknown-Version")";
+                request.httpMethod = "POST"
+                request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+                request.setValue("\(authToken)", forHTTPHeaderField: "token_auth")
+                let task = URLSession.shared.dataTask(with:  request) { data, response, error in
                 if let httpResponse = response as? HTTPURLResponse {
                     let statusCode = httpResponse.statusCode
                 }

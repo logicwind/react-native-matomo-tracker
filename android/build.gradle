@@ -91,7 +91,7 @@ dependencies {
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation 'com.jakewharton.timber:timber:5.0.1'
-  implementation 'com.github.matomo-org:matomo-sdk-android:4.2'
+  implementation 'com.github.matomo-org:matomo-sdk-android:4.3'
   implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 }
 
