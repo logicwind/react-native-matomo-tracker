@@ -55,7 +55,10 @@ trackMediaEvent
 
 ### createTracker()
 
-The createTracker function is used to instantiate a tracker object for Matomo analytics within a React Native application .It will take `matomo-url` and `siteId` parameter.
+The createTracker function is used to instantiate a tracker object for Matomo analytics within a React Native application .It will take `matomo-url` and `siteId` parameter and `auth_token` is optional paramter .
+
+ If you want to create matomo auth_token refere this link https://matomo.org/faq/general/faq_114/
+
 #### note 
 for matomo-url madatory to add `/matomo.php` end of url.
 
@@ -67,6 +70,14 @@ for matomo-url madatory to add `/matomo.php` end of url.
 
 ```
 
+
+#### Examples with Auth Token
+
+```js
+
+ createTracker("https://your-matomo-url/matomo.php","siteId","auth_token")
+
+```
 
 ### startSession()
 
@@ -288,7 +299,7 @@ trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media pla
 
 | Method                               | Required Parameter                                          | Android | ios | Android TV | Apple TV |
 |--------------------------------------|-----------------------------------------------------------|:-------:|:---:|:----------:|:--------:|
-| [createTracker](#createtracker)      | uri: String, siteId: Number                               |    ✅   |  ✅  |    ✅      |   ✅     |
+| [createTracker](#createtracker)      | uri: String, siteId: Number, token: String           |    ✅   |  ✅  |    ✅      |   ✅     |
 | [startSession](#startsession)        | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
 | [trackScreen](#trackscreen)          | screenName: String, title: String                         |    ✅   |  ✅  |    ✅      |   ✅     |
 | [trackEvent](#trackevent)            | category:String, action:String, name:String, value:Number |    ✅   |  ✅  |    ✅      |   ✅     |
@@ -309,6 +320,10 @@ trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media pla
 <!-- ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow. -->
+
+## Troubleshoot
+
+[How do I fix the tracking failure “Request was not authenticated but should have.”](https://matomo.org/faq/how-to/faq_30835/)
 
 ## License
 

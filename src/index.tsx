@@ -17,7 +17,7 @@ const ReactNativeMatomoTracker = NativeModules.ReactNativeMatomoTracker
       }
     );
 
-export function createTracker(uri: String, siteId: Number,token:String): Promise<number> {
+export function createTracker(uri: String, siteId: Number,token:String=""): Promise<number> {
     return ReactNativeMatomoTracker.createTracker(uri, Platform.OS=="ios"?siteId.toString() :siteId,token);
 }
 

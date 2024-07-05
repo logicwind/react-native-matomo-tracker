@@ -34,8 +34,7 @@ export default function App() {
   const [result] = React.useState<number | undefined>();
 
   React.useEffect(() => {
-    createTracker("https://your-matomo-url/matomo.php", 1,"auth-token") //Replace 1 with your matomo site id
-
+    createTracker("https://your-matomo-url/matomo.php", 1) //Replace 1 with your matomo site id
   }, []);
 
   return (
@@ -176,7 +175,7 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              trackMediaEvent({ siteId: "43", mediaId: Date.now.toString(), mediaTitle: "video media play track", playerName: "test 08", mediaType: MediaType.VIDEO, mediaResource: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", mediaStatus: "100", mediaLength: "100", mediaFullScreen: "1", mediaHeight: "720", mediaWidth: "1080", mediaProgress: "100" });
+              trackMediaEvent({ siteId: "siteId", mediaId: Date.now.toString(), mediaTitle: "video media play track", playerName: "test 08", mediaType: MediaType.VIDEO, mediaResource: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", mediaStatus: "100", mediaLength: "100", mediaFullScreen: "1", mediaHeight: "720", mediaWidth: "1080", mediaProgress: "100" });
             }}
           >
             <Text style={styles.buttonText}>Video Play Stop</Text>
