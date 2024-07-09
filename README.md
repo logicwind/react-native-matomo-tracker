@@ -328,7 +328,7 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 
 <details>
   <summary>How do I fix the tracking failure “Request was not authenticated but should have</summary>
-<br>You see a failed tracking request with this error message when you use specific tracking parameters as part of the [HTTP tracking API](https://developer.matomo.org/api-reference/tracking-api) without authenticating the request correctly</br>
+<br>You see a failed tracking request with this error message when you use specific tracking parameters as part of the <a href="https://developer.matomo.org/api-reference/tracking-api">HTTP tracking API</a> without authenticating the request correctly</br>
 <br>When such an error occurred, you need to make sure to set a token_auth of a user with at least write permission. If you have set a token, check the set token to make sure it is still the same and no copy/paste error has happened.</br>
 
 <br>To generate a token_auth follow these steps:</br>
