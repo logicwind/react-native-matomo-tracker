@@ -3,7 +3,7 @@
 @interface RCT_EXTERN_MODULE(ReactNativeMatomoTracker, NSObject)
 
 
-RCT_EXTERN_METHOD(createTracker:(NSString *)uri withSiteId:(NSString *)siteId)
+RCT_EXTERN_METHOD(createTracker:(NSString *)uri withSiteId:(NSString *)siteId withToken:(NSString *)token)
 
 RCT_EXTERN_METHOD(trackScreen:(NSString *)screenName withTitle:(NSString *)title)
 

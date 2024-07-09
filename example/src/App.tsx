@@ -35,7 +35,6 @@ export default function App() {
 
   React.useEffect(() => {
     createTracker("https://your-matomo-url/matomo.php", 1) //Replace 1 with your matomo site id
-
   }, []);
 
   return (

@@ -2,14 +2,17 @@ package com.logicwind.reactnativematomotracker
 
 import android.app.Application
 import android.content.ContentValues.TAG
+import android.os.Build
 import android.util.Log
+import androidx.core.content.pm.PackageInfoCompat
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.matomo.sdk.Matomo
-import org.matomo.sdk.TrackMe
 import org.matomo.sdk.Tracker
 import org.matomo.sdk.TrackerBuilder
 import org.matomo.sdk.extra.TrackHelper
@@ -25,6 +28,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
   private var tracker: Tracker? = null
   private val client = OkHttpClient()
+  private var authToken: String? = null
 
   override fun getName(): String {
     return NAME
@@ -37,7 +41,10 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
         tracker = TrackerBuilder.createDefault(uri, siteId)
           .build(mMatomoTracker)
+
         Log.e(TAG, "initialized successfully! ${tracker}")
+
+
 
       } catch (e: Exception) {
         Log.e(TAG, "An error occurred: ${e.message}")
@@ -52,7 +59,8 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun createTracker(uri:String,siteId:Int) {
+  fun createTracker(uri:String,siteId:Int,token:String) {
+    authToken = token;
     setTracker(uri,siteId)
   }
 
@@ -175,6 +183,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     }
   }
 
+
   @ReactMethod
   fun trackMedia(
     siteId: String,
@@ -244,8 +253,17 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     }
     try {
       val urlString = "$baseUrl?$query"
+      val jsonBody = """
+        {
+            "auth_token": "$authToken",
+        }
+      """.trimIndent()
+
+      val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaType())
+
       val request = Request.Builder()
         .url(urlString)
+        .post(requestBody)
         .build()
 
       client.newCall(request).execute().use { response ->
