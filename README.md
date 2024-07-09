@@ -57,10 +57,13 @@ trackMediaEvent
 
 The createTracker function is used to instantiate a tracker object for Matomo analytics within a React Native application .It will take `matomo-url` and `siteId` parameter and `auth_token` is optional paramter .
 
- If you want to create matomo auth_token refere this link https://matomo.org/faq/general/faq_114/
+ <!-- If you want to create matomo auth_token refere this link https://matomo.org/faq/general/faq_114/ -->
 
 #### note 
 for matomo-url madatory to add `/matomo.php` end of url.
+
+- **Generate Auth Token**  
+  [Generate auth token guide here](https://matomo.org/faq/general/faq_114/)
 
 #### Examples
 
@@ -321,9 +324,27 @@ trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media pla
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow. -->
 
-## Troubleshoot
+## Troubleshooting
 
-[How do I fix the tracking failure “Request was not authenticated but should have.”](https://matomo.org/faq/how-to/faq_30835/)
+<details>
+  <summary>How do I fix the tracking failure “Request was not authenticated but should have</summary>
+<br>You see a failed tracking request with this error message when you use specific tracking parameters as part of the [HTTP tracking API](https://developer.matomo.org/api-reference/tracking-api) without authenticating the request correctly</br>
+<br>When such an error occurred, you need to make sure to set a token_auth of a user with at least write permission. If you have set a token, check the set token to make sure it is still the same and no copy/paste error has happened.</br>
+
+<br>To generate a token_auth follow these steps:</br>
+
+* Log in to Matomo 
+* Go to the Matomo Admin through the top menu
+* Click on Personal -> Security
+* At the bottom of the page click on “Create new token”
+* Confirm your account password
+* Enter the purpose for this token
+* Choose if the token should only be valid for secure requests (Matomo 5 and newer)
+
+Click on “Create new token”
+ You will now see the newly created token. Save it somewhere safe as you won’t be able to see it anymore once you leave that screen. For example, save it in a password manager. If you lose it, you will need to generate a new token.
+
+</details>
 
 ## License
 
