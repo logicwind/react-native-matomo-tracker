@@ -55,7 +55,7 @@ trackMediaEvent
 
 ### createTracker()
 
-The createTracker function is used to instantiate a tracker object for Matomo analytics within a React Native application .It will take `matomo-url` and `siteId` parameter and `auth_token` is optional paramter .
+The createTracker function is used to instantiate a tracker object for Matomo analytics within a React Native application .It requires the parameters `matomo-url` and `siteId`, with the optional parameter `auth_token`.
 
  <!-- If you want to create matomo auth_token refere this link https://matomo.org/faq/general/faq_114/ -->
 
