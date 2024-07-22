@@ -6,6 +6,7 @@ class ReactNativeMatomoTracker: NSObject {
 
     var matomoTracker: MatomoTracker?
     var baseURL = "";
+    var site_id = "";
     var authToken = "";
     var _id = "";
     override init() {
@@ -21,8 +22,10 @@ class ReactNativeMatomoTracker: NSObject {
     func createTracker(uri:String,siteId:String,token:String) {
         authToken = token
         let queue = UserDefaultsQueue(UserDefaults.standard, autoSave: true)
+        
          baseURL =  uri
-    
+         site_id = siteId
+        
         let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
         matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
         matomoTracker?.userId = _id;
@@ -115,7 +118,29 @@ class ReactNativeMatomoTracker: NSObject {
 
     }
     
-
+    @objc(trackCampaign:withCampaignUrl:)
+    func trackCampaign(title:String,campaignUrl:String) {
+        
+        if let campaignUrl = URL(string: campaignUrl) {
+            if let components = URLComponents(url: campaignUrl, resolvingAgainstBaseURL: false),
+               let queryItems = components.queryItems {
+                var campaignParameters = [String: String]()
+                for queryItem in queryItems {
+                    if let value = queryItem.value {
+                        campaignParameters[queryItem.name] = value
+                    }
+                }
+            
+                matomoTracker?.track(view: ["campaign"], url: campaignUrl)
+                matomoTracker?.dispatch()
+            }
+            
+        } else {
+                  print("Invalid URL string")
+        }
+    
+    }
+    
     @objc(trackMedia:withMediaId:withMediaTitle:withPlayerName:withMediaType:withMediaResource:withMediaStatus:withMediaLength:withMediaProgress:withMediaTTP:withMediaWidth:withMediaHeight:withMediaSE:withMediaFullScreen:)
     func trackMediaEvent(
         siteId: String,

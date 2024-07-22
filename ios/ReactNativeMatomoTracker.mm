@@ -39,14 +39,9 @@ RCT_EXTERN_METHOD(disableTracking)
 
 RCT_EXTERN_METHOD(enableTracking)
 
+RCT_EXTERN_METHOD(trackCampaign:(NSString *)title withCampaignUrl:(NSString *)campaignUrl)
+
 RCT_EXTERN_METHOD(trackMedia:(NSString *)siteId withMediaId:(NSString *)mediaId withMediaTitle:(NSString *)mediaTitle withPlayerName:(NSString *)playerName withMediaType:(NSString *)mediaType withMediaResource:(NSString *)mediaResource withMediaStatus:(NSString *)mediaStatus withMediaLength:(NSString *)mediaLength withMediaProgress:(NSString *)mediaProgress withMediaTTP:(NSString *)mediaTTP withMediaWidth:(NSString *)mediaWidth withMediaHeight:(NSString *)mediaHeight withMediaSE:(NSString *)mediaSE withMediaFullScreen:(NSString *)mediaFullScreen)
-
-
-
-
-
-
-
 
 
 

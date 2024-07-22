@@ -18,6 +18,7 @@ import {
   setUserId,
   setVisitorId,
   startSession,
+  trackCampaign,
   trackDispatch,
   trackDownload,
   trackEvent,
@@ -27,14 +28,14 @@ import {
   trackOutlink,
   trackScreen,
   trackSearch,
-
 } from '@logicwind/react-native-matomo-tracker';
 
 export default function App() {
   const [result] = React.useState<number | undefined>();
 
   React.useEffect(() => {
-    createTracker("https://your-matomo-url/matomo.php", 1) //Replace 1 with your matomo site id
+    createTracker("https://your-domain-url/matomo.php", 1)  //Replace 1 with your matomo site id
+    setLogger()
   }, []);
 
   return (
@@ -42,6 +43,15 @@ export default function App() {
       <ScrollView showsHorizontalScrollIndicator={false}>
         <View style={styles.container}>
           <Text>Matomo Tracking {result}</Text>
+
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              trackCampaign("Home screen","rntestApp://home?mtm_campaign=2020_august_promo&mtm_source=google&mtm_medium=email&mtm_keyword=2020 august promo&mtm_content=primary-cta")
+            }}
+          >
+            <Text style={styles.buttonText}>Track Campaign</Text>
+          </Pressable>
 
           <Pressable
             style={styles.button}
