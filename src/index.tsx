@@ -17,65 +17,69 @@ const ReactNativeMatomoTracker = NativeModules.ReactNativeMatomoTracker
       }
     );
 
-export function createTracker(uri: String, siteId: Number,token:String=""): Promise<number> {
+export function createTracker(uri: String, siteId: Number,token:String="") {
     return ReactNativeMatomoTracker.createTracker(uri, Platform.OS=="ios"?siteId.toString() :siteId,token);
 }
 
-export function trackScreen(screenName: String, title: String): Promise<number> {
+export function trackScreen(screenName: String, title: String) {
   return ReactNativeMatomoTracker.trackScreen(screenName, title);
 }
 
-export function trackEvent(category:String,action:String,name:String="",value:Number=0): Promise<number> {
+export function trackEvent(category:String,action:String,name:String="",value:Number=0) {
   return ReactNativeMatomoTracker.trackEvent(category,action,name,value);
 }
 
-export function trackDispatch(): Promise<number> {
+export function trackDispatch(){
   return ReactNativeMatomoTracker.trackDispatch();
 }
 
-export function trackOutlink(url:String): Promise<number> {
+export function trackOutlink(url:String) {
   return ReactNativeMatomoTracker.trackOutlink(url);
 }
 
-export function trackSearch(keyword:String): Promise<number> {
+export function trackSearch(keyword:String) {
   return ReactNativeMatomoTracker.trackSearch(keyword);
 }
 
-export function trackImpression(contentName:String): Promise<number> {
+export function trackImpression(contentName:String){
   return ReactNativeMatomoTracker.trackImpression(contentName);
 }
 
-export function trackInteraction(contentName:String,contentInteraction:String): Promise<number> {
+export function trackInteraction(contentName:String,contentInteraction:String) {
   return ReactNativeMatomoTracker.trackInteraction(contentName,contentInteraction);
 }
 
-export function trackDownload(category:String,action:String,url:String): Promise<number> {
+export function trackDownload(category:String,action:String,url:String){
   return ReactNativeMatomoTracker.trackDownload(category,action,url);
 }
 
-export function setUserId(id:String): Promise<number> {
+export function setUserId(id:String) {
   return ReactNativeMatomoTracker.setUserId(id);
 }
 
-export function setVisitorId(visitorId:String): Promise<number> {
+export function setVisitorId(visitorId:String) {
   return ReactNativeMatomoTracker.setVisitorId(visitorId);
 }
 
-export function disableTracking(): Promise<number> {
+export function disableTracking() {
   return ReactNativeMatomoTracker.disableTracking();
 }
 
-export function enableTracking(): Promise<number> {
+export function enableTracking() {
   return ReactNativeMatomoTracker.enableTracking();
 }
 
 
-export function setLogger(): Promise<number> {
+export function setLogger(){
   return ReactNativeMatomoTracker.setLogger();
 }
 
-export function startSession(): Promise<number> {
+export function startSession() {
   return ReactNativeMatomoTracker.startSession();
+}
+
+export function trackCampaign(title:String,campaignUrl:String) {
+  return ReactNativeMatomoTracker.trackCampaign(title,campaignUrl);
 }
 
 export function trackMediaEvent(

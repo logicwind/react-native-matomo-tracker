@@ -2,9 +2,10 @@ package com.logicwind.reactnativematomotracker
 
 import android.app.Application
 import android.content.ContentValues.TAG
+import android.content.Context
+import android.content.pm.PackageInfo
 import android.os.Build
 import android.util.Log
-import androidx.core.content.pm.PackageInfoCompat
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
@@ -29,6 +30,8 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   private var tracker: Tracker? = null
   private val client = OkHttpClient()
   private var authToken: String? = null
+  private var site_Id: String = ""
+  private var context:ReactApplicationContext  = reactContext
 
   override fun getName(): String {
     return NAME
@@ -61,6 +64,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun createTracker(uri:String,siteId:Int,token:String) {
     authToken = token;
+    site_Id = siteId.toString();
     setTracker(uri,siteId)
   }
 
@@ -183,6 +187,52 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     }
   }
 
+  fun getUserAgent(context: ReactApplicationContext): String {
+    val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+    val appName = context.applicationInfo.loadLabel(context.packageManager).toString()
+    val appVersion = packageInfo.versionName
+    val userAgent = "Android/${Build.VERSION.RELEASE} (${Build.MODEL}; ${Build.MANUFACTURER}), MatomoTrackerSDK/4.2 $appName/$appVersion"
+
+    return userAgent
+  }
+
+  @ReactMethod
+  fun trackCampaign(title:String, campaignUrl: String) {
+
+    if (tracker != null) {
+      val userAgent = getUserAgent(context)
+      val baseUrl = tracker?.apiUrl
+      var query = "idsite=${encode(site_Id)}" +
+        "&rec=1" +
+        "&url=${encode(campaignUrl)}" +
+        "&action_name=${title}" +
+        "&_id=${encode(tracker?.visitorId.toString())}"
+        try {
+          val urlString = "$baseUrl?$query"
+          val jsonBody = """
+          {
+              "auth_token": "$authToken",
+          }
+        """.trimIndent()
+
+          val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaType())
+
+          val request = Request.Builder()
+            .url(urlString)
+            .header("User-Agent",userAgent)
+            .post(requestBody)
+            .build()
+
+          client.newCall(request).execute().use { response ->
+            val responseCode = response.code
+            println(" responseCode : "+ responseCode)
+          }
+        }catch (e:Exception){
+          Log.e(TAG, "error : ${e.message}")
+        }
+    }
+  }
+
 
   @ReactMethod
   fun trackMedia(
@@ -213,6 +263,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     }
 
     val baseUrl = tracker?.apiUrl
+     val userAgent = getUserAgent(context)
     var query = "idsite=${encode(siteId)}" +
       "&rec=1" +
       "&r=${generateRandomNumber()}" +
@@ -263,6 +314,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
       val request = Request.Builder()
         .url(urlString)
+        .header("User-Agent",userAgent)
         .post(requestBody)
         .build()
 
