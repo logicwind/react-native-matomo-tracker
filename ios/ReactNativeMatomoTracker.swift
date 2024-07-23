@@ -20,15 +20,21 @@ class ReactNativeMatomoTracker: NSObject {
   
     @objc(createTracker:withSiteId:withToken:)
     func createTracker(uri:String,siteId:String,token:String) {
-        authToken = token
-        let queue = UserDefaultsQueue(UserDefaults.standard, autoSave: true)
+        do {
+            authToken = token
+            let queue = UserDefaultsQueue(UserDefaults.standard, autoSave: true)
+            
+             baseURL =  uri
+             site_id = siteId
+            
+            let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
+            matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
+            matomoTracker?.userId = _id;
+        } catch let error {
+            // Handle the error
+            print("An error occurred: \(error.localizedDescription)")
+        }
         
-         baseURL =  uri
-         site_id = siteId
-        
-        let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
-        matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
-        matomoTracker?.userId = _id;
     }
     
     
