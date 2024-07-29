@@ -26,10 +26,11 @@ class ReactNativeMatomoTracker: NSObject {
             
              baseURL =  uri
              site_id = siteId
-            
-            let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
-            matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
-            matomoTracker?.userId = _id;
+            if(!baseURL.isEmpty && !siteId.isEmpty){
+                let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
+                matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
+                matomoTracker?.userId = _id;
+            }
         } catch let error {
             // Handle the error
             print("An error occurred: \(error.localizedDescription)")
@@ -61,8 +62,10 @@ class ReactNativeMatomoTracker: NSObject {
     
     @objc(trackOutlink:)
     func trackOutlink(url:String) {
-        let event = Event(tracker: matomoTracker!, action: ["link"],customTrackingParameters: ["link" : url],isCustomAction: true)
-             matomoTracker?.track(event)
+        if(matomoTracker != nil){
+            let event = Event(tracker: matomoTracker!, action: ["link"],customTrackingParameters: ["link" : url],isCustomAction: true)
+                 matomoTracker?.track(event)
+        }
     }
     
     @objc(trackSearch:)
@@ -83,8 +86,11 @@ class ReactNativeMatomoTracker: NSObject {
     
     @objc(trackDownload:withAction:withUrl:)
     func trackDownload(category:String,action:String,url:String) {
-        let event = Event(tracker: matomoTracker!, action: ["download"],customTrackingParameters: ["download" : url],isCustomAction: true)
-             matomoTracker?.track(event)
+        if(matomoTracker != nil){
+            let event = Event(tracker: matomoTracker!, action: ["download"],customTrackingParameters: ["download" : url],isCustomAction: true)
+            matomoTracker?.track(event)
+            
+        }
     }
     
     @objc(setUserId:)

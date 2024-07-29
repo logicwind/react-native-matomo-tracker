@@ -34,7 +34,7 @@ export default function App() {
   const [result] = React.useState<number | undefined>();
 
   React.useEffect(() => {
-    createTracker("https://your-domain-url/matomo.php", 1)  //Replace 1 with your matomo site id
+    createTracker(undefined, undefined,)  //Replace 1 with your matomo site id
     setLogger()
   }, []);
 
