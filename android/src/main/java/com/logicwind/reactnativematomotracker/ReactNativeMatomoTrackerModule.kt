@@ -41,13 +41,9 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   fun setTracker(uri:String,siteId: Int) {
     if (tracker == null) {
       try {
-
         tracker = TrackerBuilder.createDefault(uri, siteId)
           .build(mMatomoTracker)
-
         Log.e(TAG, "initialized successfully! ${tracker}")
-
-
 
       } catch (e: Exception) {
         Log.e(TAG, "An error occurred: ${e.message}")
@@ -64,8 +60,22 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun createTracker(uri:String,siteId:Int,token:String) {
     authToken = token;
-    site_Id = siteId.toString();
-    setTracker(uri,siteId)
+
+    if (uri.isEmpty() &&  siteId <= 0) {
+      // Handle the error appropriately
+      Log.e("createTracker", "baseURL and siteId is empty or undeifne");
+      // You can show an error message, disable tracking, or use default value
+    }
+    else if(uri.isEmpty()){
+      Log.e("createTracker", "baseURL is empty or undeifne");
+    }
+    else if(siteId <= 0){
+      Log.e("createTracker", "siteId is empty or undeifne");
+    }
+    else{
+      site_Id = siteId.toString();
+      setTracker(uri,siteId)
+    }
   }
 
   @ReactMethod
