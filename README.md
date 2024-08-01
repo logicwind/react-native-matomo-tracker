@@ -48,7 +48,8 @@ trackSearch,
 disableTracking,
 enableTracking, 
 startSession,
-trackMediaEvent
+trackMediaEvent,
+trackCampaign
 } from '@logicwind/react-native-matomo-tracker';
      
 ```
@@ -395,6 +396,14 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 
 Click on “Create new token”
  You will now see the newly created token. Save it somewhere safe as you won’t be able to see it anymore once you leave that screen. For example, save it in a password manager. If you lose it, you will need to generate a new token.
+
+</details>
+
+<details>
+  <summary>How do I fix the tracking not work after successfully inetgration</summary>
+<br> if you have install matomo successfully but it will not track the event on matomo dashbaord then you have to check your project's bundle name in Matomo's bot detector list to validate if the starting characters match in their list or not. if it is match with your bundle name then you need to chnage your bundle name in ios.
+</br>
+<br>Here's the bot list of Matomo's bot detector: <a href="https://github.com/matomo-org/device-detector?tab=readme-ov-file#what-device-detector-is-able-to-detect">click here</a></br>
 
 </details>
 
