@@ -63,15 +63,13 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     authToken = token;
 
     if (uri.isEmpty() &&  siteId <= 0) {
-      // Handle the error appropriately
-      Log.e("createTracker", "baseURL and siteId is empty or undeifne");
-      // You can show an error message, disable tracking, or use default value
+      Log.e("createTracker", "baseURL and siteId is empty or undefined");
     }
     else if(uri.isEmpty()){
-      Log.e("createTracker", "baseURL is empty or undeifne");
+      Log.e("createTracker", "baseURL is empty or undefined");
     }
     else if(siteId <= 0){
-      Log.e("createTracker", "siteId is empty or undeifne");
+      Log.e("createTracker", "siteId is empty or undefined");
     }
     else{
       site_Id = siteId.toString();

@@ -26,13 +26,13 @@ class ReactNativeMatomoTracker: NSObject {
              baseURL =  uri
              site_id = siteId
             if(baseURL.isEmpty && siteId.isEmpty){
-                print("createTracker : baseURL and siteId is empty or undeifne")
+                print("createTracker : baseURL and siteId is empty or undefined")
             }
             else if(baseURL.isEmpty){
-                print("createTracker : baseURL is empty or undeifne")
+                print("createTracker : baseURL is empty or undefined")
             }
             else if(siteId.isEmpty){
-                print("createTracker : siteId is empty or undeifne")
+                print("createTracker : siteId is empty or undefined")
             }
             else if(!baseURL.isEmpty && !siteId.isEmpty){
                 let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
