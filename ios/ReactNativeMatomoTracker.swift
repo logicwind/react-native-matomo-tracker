@@ -173,88 +173,91 @@ class ReactNativeMatomoTracker: NSObject {
         mediaSE: String,
         mediaFullScreen:String
     ) {
-        
-        if(mediaStatus=="0"){
+        if(!siteId.isEmpty && matomoTracker != nil)
+        {
             
-            matomoTracker?.track(eventWithCategory:mediaType, action:"play",name: mediaTitle)
-            matomoTracker?.dispatch()
-        }
-
-        if(mediaStatus==mediaLength){
-            matomoTracker?.track(eventWithCategory:mediaType, action:"stop",name: mediaTitle)
-            matomoTracker?.dispatch()
-        }
-        
-
-        var uid =  ""
-        
-        if var userId = matomoTracker?.userId {
-            uid = userId
-        } else {
-            uid = ""
-        }
-        
-        
-        let baseUrl = baseURL
-        var query = "idsite=\(encodeParameter(value: siteId))" +
-                    "&rec=1" +
-                    "&r=\(generateRandomNumber())" +
-                    "&ma_id=\(encodeParameter(value: mediaId))" +
-                    "&ma_ti=\(encodeParameter(value: mediaTitle))" +
-                    "&ma_pn=\(encodeParameter(value: playerName))" +
-                    "&ma_mt=\(encodeParameter(value: mediaType))" +
-                    "&ma_re=\(encodeParameter(value: mediaResource))" +
-                    "&ma_st=\(encodeParameter(value: mediaStatus))" +
-                    "&cid=\(encodeParameter(value: _id))" +
-                    "&uid=\(encodeParameter(value: uid))"
-        
-        
-        
-        if(!mediaLength.isEmpty){
-            query=query+"&ma_le=\(encodeParameter(value: mediaLength))";
-        }
-        
-        if(!mediaProgress.isEmpty){
-            query=query+"&ma_ps=\(encodeParameter(value: mediaProgress))";
-        }
-
-        if(!mediaWidth.isEmpty){
-            query=query+"&ma_w=\(encodeParameter(value: mediaWidth))";
-        }
-
-        if(!mediaHeight.isEmpty){
-            query=query+"&ma_h=\(encodeParameter(value: mediaHeight))";
-        }
-
-        if(!mediaFullScreen.isEmpty){
-            query=query+"&ma_fs=\(encodeParameter(value: mediaFullScreen))";
-        }
-        
-        if(!mediaSE.isEmpty){
-            query=query+"&ma_se=\(encodeParameter(value: mediaSE))";
-        }
-        
-        if(!mediaTTP.isEmpty){
-            query=query+"&ma_ttp=\(encodeParameter(value: mediaTTP))";
-        }
-        
-      
-        let urlString = "\(baseUrl)?\(query)"
-
-        if let url = URL(string: urlString) {
-                var request = URLRequest(url: url)
-               let device = Device.makeCurrentDevice();
-               let application = Application.makeCurrentApplication()
-               let userAgent = "Darwin/\(device.darwinVersion ?? "Unknown-Version") (\(device.platform); \(device.operatingSystem) \(device.osVersion)), MatomoTrackerSDK/\(MatomoTracker.sdkVersion)\(application.bundleName ?? "Unknown-App")/\(application.bundleShortVersion ?? "Unknown-Version")";
-                request.httpMethod = "POST"
-                request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-                request.setValue("\(authToken)", forHTTPHeaderField: "token_auth")
-                let task = URLSession.shared.dataTask(with:  request) { data, response, error in
-                if let httpResponse = response as? HTTPURLResponse {
-                    let statusCode = httpResponse.statusCode
-                }
+            if(mediaStatus=="0"){
+                
+                matomoTracker?.track(eventWithCategory:mediaType, action:"play",name: mediaTitle)
+                matomoTracker?.dispatch()
             }
-            task.resume()
+
+            if(mediaStatus==mediaLength){
+                matomoTracker?.track(eventWithCategory:mediaType, action:"stop",name: mediaTitle)
+                matomoTracker?.dispatch()
+            }
+            
+
+            var uid =  ""
+            
+            if var userId = matomoTracker?.userId {
+                uid = userId
+            } else {
+                uid = ""
+            }
+            
+            
+            let baseUrl = baseURL
+            var query = "idsite=\(encodeParameter(value: siteId))" +
+                        "&rec=1" +
+                        "&r=\(generateRandomNumber())" +
+                        "&ma_id=\(encodeParameter(value: mediaId))" +
+                        "&ma_ti=\(encodeParameter(value: mediaTitle))" +
+                        "&ma_pn=\(encodeParameter(value: playerName))" +
+                        "&ma_mt=\(encodeParameter(value: mediaType))" +
+                        "&ma_re=\(encodeParameter(value: mediaResource))" +
+                        "&ma_st=\(encodeParameter(value: mediaStatus))" +
+                        "&cid=\(encodeParameter(value: _id))" +
+                        "&uid=\(encodeParameter(value: uid))"
+            
+            
+            
+            if(!mediaLength.isEmpty){
+                query=query+"&ma_le=\(encodeParameter(value: mediaLength))";
+            }
+            
+            if(!mediaProgress.isEmpty){
+                query=query+"&ma_ps=\(encodeParameter(value: mediaProgress))";
+            }
+
+            if(!mediaWidth.isEmpty){
+                query=query+"&ma_w=\(encodeParameter(value: mediaWidth))";
+            }
+
+            if(!mediaHeight.isEmpty){
+                query=query+"&ma_h=\(encodeParameter(value: mediaHeight))";
+            }
+
+            if(!mediaFullScreen.isEmpty){
+                query=query+"&ma_fs=\(encodeParameter(value: mediaFullScreen))";
+            }
+            
+            if(!mediaSE.isEmpty){
+                query=query+"&ma_se=\(encodeParameter(value: mediaSE))";
+            }
+            
+            if(!mediaTTP.isEmpty){
+                query=query+"&ma_ttp=\(encodeParameter(value: mediaTTP))";
+            }
+            
+          
+            let urlString = "\(baseUrl)?\(query)"
+
+            if let url = URL(string: urlString) {
+                    var request = URLRequest(url: url)
+                   let device = Device.makeCurrentDevice();
+                   let application = Application.makeCurrentApplication()
+                   let userAgent = "Darwin/\(device.darwinVersion ?? "Unknown-Version") (\(device.platform); \(device.operatingSystem) \(device.osVersion)), MatomoTrackerSDK/\(MatomoTracker.sdkVersion)\(application.bundleName ?? "Unknown-App")/\(application.bundleShortVersion ?? "Unknown-Version")";
+                    request.httpMethod = "POST"
+                    request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+                    request.setValue("\(authToken)", forHTTPHeaderField: "token_auth")
+                    let task = URLSession.shared.dataTask(with:  request) { data, response, error in
+                    if let httpResponse = response as? HTTPURLResponse {
+                        let statusCode = httpResponse.statusCode
+                    }
+                }
+                task.resume()
+            }
         }
     }
     

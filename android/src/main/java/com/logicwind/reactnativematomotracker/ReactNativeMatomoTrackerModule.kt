@@ -1,5 +1,6 @@
 package com.logicwind.reactnativematomotracker
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -206,6 +207,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     return userAgent
   }
 
+  @SuppressLint("SuspiciousIndentation")
   @ReactMethod
   fun trackCampaign(title:String, campaignUrl: String) {
 
@@ -220,10 +222,10 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
         try {
           val urlString = "$baseUrl?$query"
           val jsonBody = """
-          {
-              "auth_token": "$authToken",
-          }
-        """.trimIndent()
+                {
+                    "auth_token": "$authToken"
+                }
+            """.trimIndent()
 
           val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaType())
 
@@ -263,77 +265,80 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
   ) {
 
-    if(mediaStatus=="0") {
-      TrackHelper.track().event(mediaType, "play").name(mediaTitle).with(tracker)
-      trackDispatch()
-    }
-    if(mediaStatus==mediaLength && mediaStatus==mediaProgress) {
-      TrackHelper.track().event(mediaType, "stop").name(mediaTitle).with(tracker)
-      trackDispatch()
-    }
+    if(siteId.isNotEmpty() && tracker!=null){
+      if(mediaStatus=="0") {
+        TrackHelper.track().event(mediaType, "play").name(mediaTitle).with(tracker)
+        trackDispatch()
+      }
+      if(mediaStatus==mediaLength && mediaStatus==mediaProgress) {
+        TrackHelper.track().event(mediaType, "stop").name(mediaTitle).with(tracker)
+        trackDispatch()
+      }
+      val baseUrl = tracker?.apiUrl
+      val userAgent = getUserAgent(context)
+      var query = "idsite=${encode(siteId)}" +
+        "&rec=1" +
+        "&r=${generateRandomNumber()}" +
+        "&ma_id=${encode(mediaId)}" +
+        "&ma_ti=${encode(mediaTitle)}" +
+        "&ma_pn=${encode(playerName)}" +
+        "&ma_mt=${encode(mediaType)}" +
+        "&ma_re=${encode(mediaResource)}"+
+        "&ma_st=${encode(mediaStatus)}"+
+        "&_id=${encode(tracker?.visitorId.toString())}"
 
-    val baseUrl = tracker?.apiUrl
-     val userAgent = getUserAgent(context)
-    var query = "idsite=${encode(siteId)}" +
-      "&rec=1" +
-      "&r=${generateRandomNumber()}" +
-      "&ma_id=${encode(mediaId)}" +
-      "&ma_ti=${encode(mediaTitle)}" +
-      "&ma_pn=${encode(playerName)}" +
-      "&ma_mt=${encode(mediaType)}" +
-      "&ma_re=${encode(mediaResource)}"+
-      "&ma_st=${encode(mediaStatus)}"+
-      "&_id=${encode(tracker?.visitorId.toString())}"
+      if(mediaLength.isNotEmpty()){
+        query=query+ "&ma_le=${encode(mediaLength)}";
+      }
 
-    if(mediaLength.isNotEmpty()){
-      query=query+ "&ma_le=${encode(mediaLength)}";
-    }
+      if(mediaProgress.isNotEmpty()){
+        query=query+  "&ma_ps=${encode(mediaProgress)}";
+      }
 
-    if(mediaProgress.isNotEmpty()){
-      query=query+  "&ma_ps=${encode(mediaProgress)}";
-    }
+      if(mediaWidth.isNotEmpty()){
+        query=query+ "&ma_w=${encode(mediaWidth)}";
+      }
 
-    if(mediaWidth.isNotEmpty()){
-      query=query+ "&ma_w=${encode(mediaWidth)}";
-    }
+      if(mediaHeight.isNotEmpty()){
+        query=query+  "&ma_h=${encode(mediaHeight)}";
+      }
 
-    if(mediaHeight.isNotEmpty()){
-      query=query+  "&ma_h=${encode(mediaHeight)}";
-    }
+      if(mediaFullScreen.isNotEmpty()){
+        query=query+ "&ma_fs=${encode(mediaFullScreen)}";
+      }
 
-    if(mediaFullScreen.isNotEmpty()){
-      query=query+ "&ma_fs=${encode(mediaFullScreen)}";
-    }
+      if(mediaSE.isNotEmpty()){
+        query=query+  "&ma_se=${encode(mediaSE)}";
+      }
 
-    if(mediaSE.isNotEmpty()){
-      query=query+  "&ma_se=${encode(mediaSE)}";
-    }
-
-    if(mediaTTP.isNotEmpty()){
-      query=query+ "&ma_ttp=${encode(mediaTTP)}";
-    }
-    try {
-      val urlString = "$baseUrl?$query"
-      val jsonBody = """
+      if(mediaTTP.isNotEmpty()){
+        query=query+ "&ma_ttp=${encode(mediaTTP)}";
+      }
+      try {
+        val urlString = "$baseUrl?$query"
+        val jsonBody = """
         {
             "auth_token": "$authToken",
         }
       """.trimIndent()
 
-      val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaType())
+        val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaType())
 
-      val request = Request.Builder()
-        .url(urlString)
-        .header("User-Agent",userAgent)
-        .post(requestBody)
-        .build()
+        val request = Request.Builder()
+          .url(urlString)
+          .header("User-Agent",userAgent)
+          .post(requestBody)
+          .build()
 
-      client.newCall(request).execute().use { response ->
-        val responseCode = response.code
+        client.newCall(request).execute().use { response ->
+          val responseCode = response.code
+        }
+      }catch (e:Exception){
+        Log.e(TAG, "error : ${e.message}")
       }
-    }catch (e:Exception){
-      Log.e(TAG, "error : ${e.message}")
     }
+
+
   }
 
   private fun generateRandomNumber(): Long {
