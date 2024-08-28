@@ -155,8 +155,9 @@ class ReactNativeMatomoTracker: NSObject {
         }
     
     }
+  
     
-    @objc(trackMedia:withMediaId:withMediaTitle:withPlayerName:withMediaType:withMediaResource:withMediaStatus:withMediaLength:withMediaProgress:withMediaTTP:withMediaWidth:withMediaHeight:withMediaSE:withMediaFullScreen:)
+    @objc(trackMedia:withMediaId:withMediaTitle:withPlayerName:withMediaType:withMediaResource:withMediaStatus:withMediaLength:withMediaProgress:withMediaTTP:withMediaWidth:withMediaHeight:withMediaSE:withMediaFullScreen:withDimensions:)
     func trackMediaEvent(
         siteId: String,
         mediaId: String,
@@ -171,7 +172,8 @@ class ReactNativeMatomoTracker: NSObject {
         mediaWidth: String,
         mediaHeight: String,
         mediaSE: String,
-        mediaFullScreen:String
+        mediaFullScreen:String,
+        dimensions:[NSDictionary]
     ) {
         if(!siteId.isEmpty && matomoTracker != nil)
         {
@@ -196,7 +198,7 @@ class ReactNativeMatomoTracker: NSObject {
                 uid = ""
             }
             
-            
+           
             let baseUrl = baseURL
             var query = "idsite=\(encodeParameter(value: siteId))" +
                         "&rec=1" +
@@ -210,8 +212,31 @@ class ReactNativeMatomoTracker: NSObject {
                         "&cid=\(encodeParameter(value: _id))" +
                         "&uid=\(encodeParameter(value: uid))"
             
+            if(!dimensions.isEmpty){
             
+              for dimension in dimensions {
+                if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
+                    // Attempt to parse the JSON value
+                    if let data = value.data(using: .utf8),
+                       let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        // Convert jsonObject to a string or handle as needed
+                        let jsonValueString = jsonObject.map { "\($0.key)=\($0.value)" }.joined(separator: ",")
+                        query += "&\(key)=\(encodeParameter(value: jsonValueString))"
+                    } else {
+                        query += "&\(key)=\(encodeParameter(value: value))"
+                    }
+                }
+              }
+                
+            }
             
+//            if(!customVariable.isEmpty){
+//             
+//                let encodedCustomVariable = encodeParameter(value: customVariable)
+//                print("customVariable \(encodedCustomVariable)")
+//                query=query+"&_cvar=\(encodedCustomVariable)";
+//            }
+//            
             if(!mediaLength.isEmpty){
                 query=query+"&ma_le=\(encodeParameter(value: mediaLength))";
             }

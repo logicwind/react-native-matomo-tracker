@@ -10,10 +10,12 @@ import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableArray
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import org.matomo.sdk.Matomo
 import org.matomo.sdk.Tracker
 import org.matomo.sdk.TrackerBuilder
@@ -259,8 +261,8 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     mediaWidth: String,
     mediaHeight: String,
     mediaSE: String,
-    mediaFullScreen:String
-
+    mediaFullScreen:String,
+    dimensions: ReadableArray
   ) {
 
     if(siteId.isNotEmpty() && tracker!=null){
@@ -272,6 +274,17 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
         TrackHelper.track().event(mediaType, "stop").name(mediaTitle).with(tracker)
         trackDispatch()
       }
+
+      fun convertJsonString(jsonString: String): JSONObject? {
+        return try {
+          JSONObject(jsonString)
+        } catch (e: Exception) {
+          e.printStackTrace()
+          null
+        }
+      }
+
+
       val baseUrl = tracker?.apiUrl
       val userAgent = getUserAgent(context)
       var query = "idsite=${encode(siteId)}" +
@@ -284,6 +297,26 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
         "&ma_re=${encode(mediaResource)}"+
         "&ma_st=${encode(mediaStatus)}"+
         "&_id=${encode(tracker?.visitorId.toString())}"
+
+      if (dimensions.size() > 0) {
+        for (i in 0 until dimensions.size()) {
+          val dimension = dimensions.getMap(i)
+          val key = dimension?.getString("key")
+          val value = dimension?.getString("value")
+
+          if (key != null && value != null) {
+            try {
+              val jsonObject = JSONObject(value)
+              val jsonValueString = jsonObject.toString()
+              TrackHelper.track().screen("/media").dimension(i+1,value).with(tracker)
+              trackDispatch()
+            } catch (e: Exception) {
+              TrackHelper.track().screen("/media").dimension(i+1,value).with(tracker)
+              trackDispatch()
+            }
+          }
+        }
+      }
 
       if(mediaLength.isNotEmpty()){
         query=query+ "&ma_le=${encode(mediaLength)}";
@@ -330,6 +363,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
         client.newCall(request).execute().use { response ->
           val responseCode = response.code
+          println("responseCode : $responseCode")
         }
       }catch (e:Exception){
         Log.e(TAG, "error : ${e.message}")

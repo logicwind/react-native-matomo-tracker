@@ -286,14 +286,14 @@ trackMediaEvent function use to monitor user interactions with media content, su
 | mediaHeight    | The resolution height of the media in pixels. Only recommended being set for videos.                            |
 | mediaFullScreen| Should be 0 or 1 and defines whether the media is currently viewed in full screen. Only recommended being set for videos.                            |
 | mediaSE        | An optional comma separated list of which positions within a media a user has played. For example if the user has viewed position 5s, 10s, 15s and 35s, then you would need to send 5,10,15,35. We recommend to round to the next 5 seconds and not send a value for each second. Internally, Matomo may round to the next 15 or 30 seconds. For performance optimisation we recommend not sending the same position twice. Meaning if you have sent ma_se=10 there is no need to send later ma_se=10,20 but instead only ma_se=20.                             |
-
+| dimensions| Dimension contains a key and a value, and where the key is a custom dimension key created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)    
 
 
 #### Examples
 
 ```js
 
-trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100"});
+trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100", dimensions:[{key:"dimension1",value:JSON.stringify({"email": "test.user@logicwind.com","instanceType": "VIDEO","videoId": "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de",})}]});
 
 ```
 
@@ -369,7 +369,7 @@ trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo
 | [disableTracking](#disabletracking)  | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
 | [enableTracking](#enabletracking)    | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
 | [setLogger](#setlogger)              | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
-| [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String                                            |    ✅   |  ✅  |    ✅      |   ✅     |
+| [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String, dimensions : [object]                                            |    ✅   |  ✅  |    ✅      |   ✅     |
 | [trackCampaign](#trackcampaign)      | title: String, campaignUrl: String                        |    ✅   |  ✅  |    ✅      |   ✅     |
 
 
