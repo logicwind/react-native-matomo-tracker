@@ -293,7 +293,7 @@ trackMediaEvent function use to monitor user interactions with media content, su
 
 ```js
 
-trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100", dimensions:[{key:"dimension1",value:JSON.stringify({"email": "test.user@logicwind.com","instanceType": "VIDEO","videoId": "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de",})}]});
+trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100", dimensions:[{key:"dimension1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]});
 
 ```
 
