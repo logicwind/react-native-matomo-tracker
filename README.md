@@ -48,7 +48,8 @@ trackSearch,
 disableTracking,
 enableTracking, 
 startSession,
-trackMediaEvent
+trackMediaEvent,
+trackCampaign
 } from '@logicwind/react-native-matomo-tracker';
      
 ```
@@ -285,14 +286,14 @@ trackMediaEvent function use to monitor user interactions with media content, su
 | mediaHeight    | The resolution height of the media in pixels. Only recommended being set for videos.                            |
 | mediaFullScreen| Should be 0 or 1 and defines whether the media is currently viewed in full screen. Only recommended being set for videos.                            |
 | mediaSE        | An optional comma separated list of which positions within a media a user has played. For example if the user has viewed position 5s, 10s, 15s and 35s, then you would need to send 5,10,15,35. We recommend to round to the next 5 seconds and not send a value for each second. Internally, Matomo may round to the next 15 or 30 seconds. For performance optimisation we recommend not sending the same position twice. Meaning if you have sent ma_se=10 there is no need to send later ma_se=10,20 but instead only ma_se=20.                             |
-
+| dimensions| Dimension contains a key and a value, and where the key is a custom dimension key created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)    
 
 
 #### Examples
 
 ```js
 
-trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100"});
+trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100", dimensions:[{key:"dimension1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]});
 
 ```
 
@@ -368,7 +369,7 @@ trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo
 | [disableTracking](#disabletracking)  | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
 | [enableTracking](#enabletracking)    | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
 | [setLogger](#setlogger)              | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
-| [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String                                            |    ✅   |  ✅  |    ✅      |   ✅     |
+| [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String, dimensions : [object]                                            |    ✅   |  ✅  |    ✅      |   ✅     |
 | [trackCampaign](#trackcampaign)      | title: String, campaignUrl: String                        |    ✅   |  ✅  |    ✅      |   ✅     |
 
 
@@ -395,6 +396,14 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 
 Click on “Create new token”
  You will now see the newly created token. Save it somewhere safe as you won’t be able to see it anymore once you leave that screen. For example, save it in a password manager. If you lose it, you will need to generate a new token.
+
+</details>
+
+<details>
+  <summary>How do I fix the tracking not work after successfully inetgration</summary>
+<br> if you have install matomo successfully but it will not track the event on matomo dashbaord then you have to check your project's bundle name in Matomo's bot detector list to validate if the starting characters match in their list or not. if it is match with your bundle name then you need to chnage your bundle name in ios.
+</br>
+<br>Here's the bot list of Matomo's bot detector: <a href="https://github.com/matomo-org/device-detector?tab=readme-ov-file#what-device-detector-is-able-to-detect">click here</a></br>
 
 </details>
 

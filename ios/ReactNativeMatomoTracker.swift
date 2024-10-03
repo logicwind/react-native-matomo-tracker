@@ -20,15 +20,25 @@ class ReactNativeMatomoTracker: NSObject {
   
     @objc(createTracker:withSiteId:withToken:)
     func createTracker(uri:String,siteId:String,token:String) {
-        authToken = token
-        let queue = UserDefaultsQueue(UserDefaults.standard, autoSave: true)
-        
-         baseURL =  uri
-         site_id = siteId
-        
-        let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
-        matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
-        matomoTracker?.userId = _id;
+            authToken = token
+            let queue = UserDefaultsQueue(UserDefaults.standard, autoSave: true)
+            
+             baseURL =  uri
+             site_id = siteId
+            if(baseURL.isEmpty && siteId.isEmpty){
+                print("createTracker : baseURL and siteId is empty or undefined")
+            }
+            else if(baseURL.isEmpty){
+                print("createTracker : baseURL is empty or undefined")
+            }
+            else if(siteId.isEmpty){
+                print("createTracker : siteId is empty or undefined")
+            }
+            else if(!baseURL.isEmpty && !siteId.isEmpty){
+                let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
+                matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
+                matomoTracker?.userId = _id;
+            }
     }
     
     
@@ -55,8 +65,10 @@ class ReactNativeMatomoTracker: NSObject {
     
     @objc(trackOutlink:)
     func trackOutlink(url:String) {
-        let event = Event(tracker: matomoTracker!, action: ["link"],customTrackingParameters: ["link" : url],isCustomAction: true)
-             matomoTracker?.track(event)
+        if(matomoTracker != nil){
+            let event = Event(tracker: matomoTracker!, action: ["link"],customTrackingParameters: ["link" : url],isCustomAction: true)
+                 matomoTracker?.track(event)
+        }
     }
     
     @objc(trackSearch:)
@@ -77,8 +89,11 @@ class ReactNativeMatomoTracker: NSObject {
     
     @objc(trackDownload:withAction:withUrl:)
     func trackDownload(category:String,action:String,url:String) {
-        let event = Event(tracker: matomoTracker!, action: ["download"],customTrackingParameters: ["download" : url],isCustomAction: true)
-             matomoTracker?.track(event)
+        if(matomoTracker != nil){
+            let event = Event(tracker: matomoTracker!, action: ["download"],customTrackingParameters: ["download" : url],isCustomAction: true)
+            matomoTracker?.track(event)
+            
+        }
     }
     
     @objc(setUserId:)
@@ -140,8 +155,9 @@ class ReactNativeMatomoTracker: NSObject {
         }
     
     }
+  
     
-    @objc(trackMedia:withMediaId:withMediaTitle:withPlayerName:withMediaType:withMediaResource:withMediaStatus:withMediaLength:withMediaProgress:withMediaTTP:withMediaWidth:withMediaHeight:withMediaSE:withMediaFullScreen:)
+    @objc(trackMedia:withMediaId:withMediaTitle:withPlayerName:withMediaType:withMediaResource:withMediaStatus:withMediaLength:withMediaProgress:withMediaTTP:withMediaWidth:withMediaHeight:withMediaSE:withMediaFullScreen:withDimensions:)
     func trackMediaEvent(
         siteId: String,
         mediaId: String,
@@ -156,90 +172,117 @@ class ReactNativeMatomoTracker: NSObject {
         mediaWidth: String,
         mediaHeight: String,
         mediaSE: String,
-        mediaFullScreen:String
+        mediaFullScreen:String,
+        dimensions:[NSDictionary]
     ) {
-        
-        if(mediaStatus=="0"){
+        if(!siteId.isEmpty && matomoTracker != nil)
+        {
             
-            matomoTracker?.track(eventWithCategory:mediaType, action:"play",name: mediaTitle)
-            matomoTracker?.dispatch()
-        }
-
-        if(mediaStatus==mediaLength){
-            matomoTracker?.track(eventWithCategory:mediaType, action:"stop",name: mediaTitle)
-            matomoTracker?.dispatch()
-        }
-        
-
-        var uid =  ""
-        
-        if var userId = matomoTracker?.userId {
-            uid = userId
-        } else {
-            uid = ""
-        }
-        
-        
-        let baseUrl = baseURL
-        var query = "idsite=\(encodeParameter(value: siteId))" +
-                    "&rec=1" +
-                    "&r=\(generateRandomNumber())" +
-                    "&ma_id=\(encodeParameter(value: mediaId))" +
-                    "&ma_ti=\(encodeParameter(value: mediaTitle))" +
-                    "&ma_pn=\(encodeParameter(value: playerName))" +
-                    "&ma_mt=\(encodeParameter(value: mediaType))" +
-                    "&ma_re=\(encodeParameter(value: mediaResource))" +
-                    "&ma_st=\(encodeParameter(value: mediaStatus))" +
-                    "&cid=\(encodeParameter(value: _id))" +
-                    "&uid=\(encodeParameter(value: uid))"
-        
-        
-        
-        if(!mediaLength.isEmpty){
-            query=query+"&ma_le=\(encodeParameter(value: mediaLength))";
-        }
-        
-        if(!mediaProgress.isEmpty){
-            query=query+"&ma_ps=\(encodeParameter(value: mediaProgress))";
-        }
-
-        if(!mediaWidth.isEmpty){
-            query=query+"&ma_w=\(encodeParameter(value: mediaWidth))";
-        }
-
-        if(!mediaHeight.isEmpty){
-            query=query+"&ma_h=\(encodeParameter(value: mediaHeight))";
-        }
-
-        if(!mediaFullScreen.isEmpty){
-            query=query+"&ma_fs=\(encodeParameter(value: mediaFullScreen))";
-        }
-        
-        if(!mediaSE.isEmpty){
-            query=query+"&ma_se=\(encodeParameter(value: mediaSE))";
-        }
-        
-        if(!mediaTTP.isEmpty){
-            query=query+"&ma_ttp=\(encodeParameter(value: mediaTTP))";
-        }
-        
-      
-        let urlString = "\(baseUrl)?\(query)"
-
-        if let url = URL(string: urlString) {
-                var request = URLRequest(url: url)
-               let device = Device.makeCurrentDevice();
-               let application = Application.makeCurrentApplication()
-               let userAgent = "Darwin/\(device.darwinVersion ?? "Unknown-Version") (\(device.platform); \(device.operatingSystem) \(device.osVersion)), MatomoTrackerSDK/\(MatomoTracker.sdkVersion)\(application.bundleName ?? "Unknown-App")/\(application.bundleShortVersion ?? "Unknown-Version")";
-                request.httpMethod = "POST"
-                request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-                request.setValue("\(authToken)", forHTTPHeaderField: "token_auth")
-                let task = URLSession.shared.dataTask(with:  request) { data, response, error in
-                if let httpResponse = response as? HTTPURLResponse {
-                    let statusCode = httpResponse.statusCode
-                }
+            if(mediaStatus=="0"){
+                
+                matomoTracker?.track(eventWithCategory:mediaType, action:"play",name: mediaTitle)
+                matomoTracker?.dispatch()
             }
-            task.resume()
+
+            if(mediaStatus==mediaLength){
+                matomoTracker?.track(eventWithCategory:mediaType, action:"stop",name: mediaTitle)
+                matomoTracker?.dispatch()
+            }
+            
+
+            var uid =  ""
+            
+            if var userId = matomoTracker?.userId {
+                uid = userId
+            } else {
+                uid = ""
+            }
+            
+           
+            let baseUrl = baseURL
+            var query = "idsite=\(encodeParameter(value: siteId))" +
+                        "&rec=1" +
+                        "&r=\(generateRandomNumber())" +
+                        "&ma_id=\(encodeParameter(value: mediaId))" +
+                        "&ma_ti=\(encodeParameter(value: mediaTitle))" +
+                        "&ma_pn=\(encodeParameter(value: playerName))" +
+                        "&ma_mt=\(encodeParameter(value: mediaType))" +
+                        "&ma_re=\(encodeParameter(value: mediaResource))" +
+                        "&ma_st=\(encodeParameter(value: mediaStatus))" +
+                        "&cid=\(encodeParameter(value: _id))" +
+                        "&uid=\(encodeParameter(value: uid))"
+            
+            if(!dimensions.isEmpty){
+            
+              for dimension in dimensions {
+                if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
+                    // Attempt to parse the JSON value
+                    if let data = value.data(using: .utf8),
+                       let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        // Convert jsonObject to a string or handle as needed
+                        let jsonValueString = jsonObject.map { "\($0.key)=\($0.value)" }.joined(separator: ",")
+                        query += "&\(key)=\(encodeParameter(value: jsonValueString))"
+                    } else {
+                        query += "&\(key)=\(encodeParameter(value: value))"
+                    }
+                }
+              }
+                
+            }
+            
+//            if(!customVariable.isEmpty){
+//             
+//                let encodedCustomVariable = encodeParameter(value: customVariable)
+//                print("customVariable \(encodedCustomVariable)")
+//                query=query+"&_cvar=\(encodedCustomVariable)";
+//            }
+//            
+            if(!mediaLength.isEmpty){
+                query=query+"&ma_le=\(encodeParameter(value: mediaLength))";
+            }
+            
+            if(!mediaProgress.isEmpty){
+                query=query+"&ma_ps=\(encodeParameter(value: mediaProgress))";
+            }
+
+            if(!mediaWidth.isEmpty){
+                query=query+"&ma_w=\(encodeParameter(value: mediaWidth))";
+            }
+
+            if(!mediaHeight.isEmpty){
+                query=query+"&ma_h=\(encodeParameter(value: mediaHeight))";
+            }
+
+            if(!mediaFullScreen.isEmpty){
+                query=query+"&ma_fs=\(encodeParameter(value: mediaFullScreen))";
+            }
+            
+            if(!mediaSE.isEmpty){
+                query=query+"&ma_se=\(encodeParameter(value: mediaSE))";
+            }
+            
+            if(!mediaTTP.isEmpty){
+                query=query+"&ma_ttp=\(encodeParameter(value: mediaTTP))";
+            }
+            
+          
+            let urlString = "\(baseUrl)?\(query)"
+
+            if let url = URL(string: urlString) {
+                    var request = URLRequest(url: url)
+                   let device = Device.makeCurrentDevice();
+                   let application = Application.makeCurrentApplication()
+                   let userAgent = "Darwin/\(device.darwinVersion ?? "Unknown-Version") (\(device.platform); \(device.operatingSystem) \(device.osVersion)), MatomoTrackerSDK/\(MatomoTracker.sdkVersion)\(application.bundleName ?? "Unknown-App")/\(application.bundleShortVersion ?? "Unknown-Version")";
+                    request.httpMethod = "POST"
+                    request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+                    request.setValue("\(authToken)", forHTTPHeaderField: "token_auth")
+                    let task = URLSession.shared.dataTask(with:  request) { data, response, error in
+                    if let httpResponse = response as? HTTPURLResponse {
+                        let statusCode = httpResponse.statusCode
+                    }
+                }
+                task.resume()
+            }
         }
     }
     

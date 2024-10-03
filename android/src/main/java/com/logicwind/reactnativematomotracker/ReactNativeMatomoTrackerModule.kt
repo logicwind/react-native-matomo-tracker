@@ -1,5 +1,6 @@
 package com.logicwind.reactnativematomotracker
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -9,10 +10,12 @@ import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableArray
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import org.matomo.sdk.Matomo
 import org.matomo.sdk.Tracker
 import org.matomo.sdk.TrackerBuilder
@@ -41,13 +44,9 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   fun setTracker(uri:String,siteId: Int) {
     if (tracker == null) {
       try {
-
         tracker = TrackerBuilder.createDefault(uri, siteId)
           .build(mMatomoTracker)
-
         Log.e(TAG, "initialized successfully! ${tracker}")
-
-
 
       } catch (e: Exception) {
         Log.e(TAG, "An error occurred: ${e.message}")
@@ -64,8 +63,20 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun createTracker(uri:String,siteId:Int,token:String) {
     authToken = token;
-    site_Id = siteId.toString();
-    setTracker(uri,siteId)
+
+    if (uri.isEmpty() &&  siteId <= 0) {
+      Log.e("createTracker", "baseURL and siteId is empty or undefined");
+    }
+    else if(uri.isEmpty()){
+      Log.e("createTracker", "baseURL is empty or undefined");
+    }
+    else if(siteId <= 0){
+      Log.e("createTracker", "siteId is empty or undefined");
+    }
+    else{
+      site_Id = siteId.toString();
+      setTracker(uri,siteId)
+    }
   }
 
   @ReactMethod
@@ -196,6 +207,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     return userAgent
   }
 
+  @SuppressLint("SuspiciousIndentation")
   @ReactMethod
   fun trackCampaign(title:String, campaignUrl: String) {
 
@@ -210,10 +222,10 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
         try {
           val urlString = "$baseUrl?$query"
           val jsonBody = """
-          {
-              "auth_token": "$authToken",
-          }
-        """.trimIndent()
+                {
+                    "auth_token": "$authToken"
+                }
+            """.trimIndent()
 
           val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaType())
 
@@ -249,81 +261,116 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     mediaWidth: String,
     mediaHeight: String,
     mediaSE: String,
-    mediaFullScreen:String
-
+    mediaFullScreen:String,
+    dimensions: ReadableArray
   ) {
 
-    if(mediaStatus=="0") {
-      TrackHelper.track().event(mediaType, "play").name(mediaTitle).with(tracker)
-      trackDispatch()
-    }
-    if(mediaStatus==mediaLength && mediaStatus==mediaProgress) {
-      TrackHelper.track().event(mediaType, "stop").name(mediaTitle).with(tracker)
-      trackDispatch()
-    }
+    if(siteId.isNotEmpty() && tracker!=null){
+      if(mediaStatus=="0") {
+        TrackHelper.track().event(mediaType, "play").name(mediaTitle).with(tracker)
+        trackDispatch()
+      }
+      if(mediaStatus==mediaLength && mediaStatus==mediaProgress) {
+        TrackHelper.track().event(mediaType, "stop").name(mediaTitle).with(tracker)
+        trackDispatch()
+      }
 
-    val baseUrl = tracker?.apiUrl
-     val userAgent = getUserAgent(context)
-    var query = "idsite=${encode(siteId)}" +
-      "&rec=1" +
-      "&r=${generateRandomNumber()}" +
-      "&ma_id=${encode(mediaId)}" +
-      "&ma_ti=${encode(mediaTitle)}" +
-      "&ma_pn=${encode(playerName)}" +
-      "&ma_mt=${encode(mediaType)}" +
-      "&ma_re=${encode(mediaResource)}"+
-      "&ma_st=${encode(mediaStatus)}"+
-      "&_id=${encode(tracker?.visitorId.toString())}"
+      fun convertJsonString(jsonString: String): JSONObject? {
+        return try {
+          JSONObject(jsonString)
+        } catch (e: Exception) {
+          e.printStackTrace()
+          null
+        }
+      }
 
-    if(mediaLength.isNotEmpty()){
-      query=query+ "&ma_le=${encode(mediaLength)}";
-    }
 
-    if(mediaProgress.isNotEmpty()){
-      query=query+  "&ma_ps=${encode(mediaProgress)}";
-    }
+      val baseUrl = tracker?.apiUrl
+      val userAgent = getUserAgent(context)
+      var query = "idsite=${encode(siteId)}" +
+        "&rec=1" +
+        "&r=${generateRandomNumber()}" +
+        "&ma_id=${encode(mediaId)}" +
+        "&ma_ti=${encode(mediaTitle)}" +
+        "&ma_pn=${encode(playerName)}" +
+        "&ma_mt=${encode(mediaType)}" +
+        "&ma_re=${encode(mediaResource)}"+
+        "&ma_st=${encode(mediaStatus)}"+
+        "&_id=${encode(tracker?.visitorId.toString())}"
 
-    if(mediaWidth.isNotEmpty()){
-      query=query+ "&ma_w=${encode(mediaWidth)}";
-    }
+      if (dimensions.size() > 0) {
+        for (i in 0 until dimensions.size()) {
+          val dimension = dimensions.getMap(i)
+          val key = dimension?.getString("key")
+          val value = dimension?.getString("value")
 
-    if(mediaHeight.isNotEmpty()){
-      query=query+  "&ma_h=${encode(mediaHeight)}";
-    }
+          if (key != null && value != null) {
+            try {
+              val jsonObject = JSONObject(value)
+              val jsonValueString = jsonObject.toString()
+              TrackHelper.track().screen("/media").dimension(i+1,value).with(tracker)
+              trackDispatch()
+            } catch (e: Exception) {
+              TrackHelper.track().screen("/media").dimension(i+1,value).with(tracker)
+              trackDispatch()
+            }
+          }
+        }
+      }
 
-    if(mediaFullScreen.isNotEmpty()){
-      query=query+ "&ma_fs=${encode(mediaFullScreen)}";
-    }
+      if(mediaLength.isNotEmpty()){
+        query=query+ "&ma_le=${encode(mediaLength)}";
+      }
 
-    if(mediaSE.isNotEmpty()){
-      query=query+  "&ma_se=${encode(mediaSE)}";
-    }
+      if(mediaProgress.isNotEmpty()){
+        query=query+  "&ma_ps=${encode(mediaProgress)}";
+      }
 
-    if(mediaTTP.isNotEmpty()){
-      query=query+ "&ma_ttp=${encode(mediaTTP)}";
-    }
-    try {
-      val urlString = "$baseUrl?$query"
-      val jsonBody = """
+      if(mediaWidth.isNotEmpty()){
+        query=query+ "&ma_w=${encode(mediaWidth)}";
+      }
+
+      if(mediaHeight.isNotEmpty()){
+        query=query+  "&ma_h=${encode(mediaHeight)}";
+      }
+
+      if(mediaFullScreen.isNotEmpty()){
+        query=query+ "&ma_fs=${encode(mediaFullScreen)}";
+      }
+
+      if(mediaSE.isNotEmpty()){
+        query=query+  "&ma_se=${encode(mediaSE)}";
+      }
+
+      if(mediaTTP.isNotEmpty()){
+        query=query+ "&ma_ttp=${encode(mediaTTP)}";
+      }
+      try {
+        val urlString = "$baseUrl?$query"
+        val jsonBody = """
         {
             "auth_token": "$authToken",
         }
       """.trimIndent()
 
-      val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaType())
+        val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaType())
 
-      val request = Request.Builder()
-        .url(urlString)
-        .header("User-Agent",userAgent)
-        .post(requestBody)
-        .build()
+        val request = Request.Builder()
+          .url(urlString)
+          .header("User-Agent",userAgent)
+          .post(requestBody)
+          .build()
 
-      client.newCall(request).execute().use { response ->
-        val responseCode = response.code
+        client.newCall(request).execute().use { response ->
+          val responseCode = response.code
+          println("responseCode : $responseCode")
+        }
+      }catch (e:Exception){
+        Log.e(TAG, "error : ${e.message}")
       }
-    }catch (e:Exception){
-      Log.e(TAG, "error : ${e.message}")
     }
+
+
   }
 
   private fun generateRandomNumber(): Long {

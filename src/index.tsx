@@ -17,8 +17,8 @@ const ReactNativeMatomoTracker = NativeModules.ReactNativeMatomoTracker
       }
     );
 
-export function createTracker(uri: String, siteId: Number,token:String="") {
-    return ReactNativeMatomoTracker.createTracker(uri, Platform.OS=="ios"?siteId.toString() :siteId,token);
+export function createTracker(uri: String="", siteId: Number=0,token:String="") {
+    return ReactNativeMatomoTracker.createTracker(uri, Platform.OS=="ios"?siteId?.toString() :siteId,token);
 }
 
 export function trackScreen(screenName: String, title: String) {
@@ -83,7 +83,7 @@ export function trackCampaign(title:String,campaignUrl:String) {
 }
 
 export function trackMediaEvent(
-{siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength="",mediaProgress="",mediaTTP="",mediaWidth="",mediaHeight="",mediaSE="",mediaFullScreen=""}:{  
+{siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength="",mediaProgress="",mediaTTP="",mediaWidth="",mediaHeight="",mediaSE="",mediaFullScreen="",dimensions=[]}:{  
   siteId: String,
   mediaId: String,
   mediaTitle: String,
@@ -97,8 +97,11 @@ export function trackMediaEvent(
   mediaWidth?: String,
   mediaHeight?: String,
   mediaSE?: String,
-  mediaFullScreen?:String}): Promise<number> {
-  return ReactNativeMatomoTracker.trackMedia(siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength,mediaProgress,mediaTTP,mediaWidth,mediaHeight,mediaSE,mediaFullScreen);
+  mediaFullScreen?:String,
+  customVariable?:String,
+  dimensions?: Array<Object>
+}): Promise<number> {
+  return ReactNativeMatomoTracker.trackMedia(siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength,mediaProgress,mediaTTP,mediaWidth,mediaHeight,mediaSE,mediaFullScreen,dimensions);
 }
 
 export const MediaType = { VIDEO: 'video',AUDIO:"audio"};
