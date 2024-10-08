@@ -286,7 +286,7 @@ trackMediaEvent function use to monitor user interactions with media content, su
 | mediaHeight    | The resolution height of the media in pixels. Only recommended being set for videos.                            |
 | mediaFullScreen| Should be 0 or 1 and defines whether the media is currently viewed in full screen. Only recommended being set for videos.                            |
 | mediaSE        | An optional comma separated list of which positions within a media a user has played. For example if the user has viewed position 5s, 10s, 15s and 35s, then you would need to send 5,10,15,35. We recommend to round to the next 5 seconds and not send a value for each second. Internally, Matomo may round to the next 15 or 30 seconds. For performance optimisation we recommend not sending the same position twice. Meaning if you have sent ma_se=10 there is no need to send later ma_se=10,20 but instead only ma_se=20.                             |
-| dimensions| Dimension contains a key and a value, and where the key is a custom dimension key created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)    
+| dimensions| Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)    
 
 
 #### Examples
