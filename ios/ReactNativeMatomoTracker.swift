@@ -181,12 +181,12 @@ class ReactNativeMatomoTracker: NSObject {
             if(mediaStatus=="0"){
                 
                 matomoTracker?.track(eventWithCategory:mediaType, action:"play",name: mediaTitle)
-                matomoTracker?.dispatch()
+               
             }
 
             if(mediaStatus==mediaLength){
                 matomoTracker?.track(eventWithCategory:mediaType, action:"stop",name: mediaTitle)
-                matomoTracker?.dispatch()
+               
             }
             
 
@@ -213,22 +213,16 @@ class ReactNativeMatomoTracker: NSObject {
                         "&uid=\(encodeParameter(value: uid))"
             
             if(!dimensions.isEmpty){
-            
+                var index = 1 ;
               for dimension in dimensions {
                 if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
-                    // Attempt to parse the JSON value
-                    if let data = value.data(using: .utf8),
-                       let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                        // Convert jsonObject to a string or handle as needed
-                        let jsonValueString = jsonObject.map { "\($0.key)=\($0.value)" }.joined(separator: ",")
-                        query += "&\(key)=\(encodeParameter(value: jsonValueString))"
-                    } else {
-                        query += "&\(key)=\(encodeParameter(value: value))"
-                    }
+                    matomoTracker?.setDimension(value, forIndex: index)
+                    matomoTracker?.dispatch()
+                    index = index + 1
                 }
               }
-                
             }
+        
             
 //            if(!customVariable.isEmpty){
 //             
@@ -283,6 +277,7 @@ class ReactNativeMatomoTracker: NSObject {
                 }
                 task.resume()
             }
+            matomoTracker?.dispatch()
         }
     }
     
