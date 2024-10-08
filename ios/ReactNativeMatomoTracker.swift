@@ -177,28 +177,20 @@ class ReactNativeMatomoTracker: NSObject {
     ) {
         if(!siteId.isEmpty && matomoTracker != nil)
         {
-            
             if(mediaStatus=="0"){
-                
                 matomoTracker?.track(eventWithCategory:mediaType, action:"play",name: mediaTitle)
-               
             }
-
             if(mediaStatus==mediaLength){
                 matomoTracker?.track(eventWithCategory:mediaType, action:"stop",name: mediaTitle)
-               
             }
-            
-
+    
             var uid =  ""
-            
             if var userId = matomoTracker?.userId {
                 uid = userId
             } else {
                 uid = ""
             }
             
-           
             let baseUrl = baseURL
             var query = "idsite=\(encodeParameter(value: siteId))" +
                         "&rec=1" +
@@ -213,12 +205,15 @@ class ReactNativeMatomoTracker: NSObject {
                         "&uid=\(encodeParameter(value: uid))"
             
             if(!dimensions.isEmpty){
-                var index = 1 ;
+              
               for dimension in dimensions {
                 if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
-                    matomoTracker?.setDimension(value, forIndex: index)
-                    matomoTracker?.dispatch()
-                    index = index + 1
+                    if let id = Int(key) {
+                        matomoTracker?.setDimension(value, forIndex: id)
+                        matomoTracker?.dispatch()
+                    } else {
+                        print("Key could not be converted to an Int")
+                    }
                 }
               }
             }
