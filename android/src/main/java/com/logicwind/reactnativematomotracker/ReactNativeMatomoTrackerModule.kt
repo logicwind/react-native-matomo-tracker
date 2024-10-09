@@ -303,16 +303,14 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
           val dimension = dimensions.getMap(i)
           val key = dimension?.getString("key")
           val value = dimension?.getString("value")
-
           if (key != null && value != null) {
-            try {
-              val jsonObject = JSONObject(value)
-              val jsonValueString = jsonObject.toString()
-              TrackHelper.track().screen("/media").dimension(i+1,value).with(tracker)
-              trackDispatch()
-            } catch (e: Exception) {
-              TrackHelper.track().screen("/media").dimension(i+1,value).with(tracker)
-              trackDispatch()
+
+            val id = key.toIntOrNull()
+            if (id != null) {
+              TrackHelper.track().screen("/media").dimension(id,value).with(tracker)
+              trackDispatch();
+            } else {
+              println("Key could not be converted to an Int")
             }
           }
         }

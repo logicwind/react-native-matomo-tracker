@@ -177,28 +177,20 @@ class ReactNativeMatomoTracker: NSObject {
     ) {
         if(!siteId.isEmpty && matomoTracker != nil)
         {
-            
             if(mediaStatus=="0"){
-                
                 matomoTracker?.track(eventWithCategory:mediaType, action:"play",name: mediaTitle)
-                matomoTracker?.dispatch()
             }
-
             if(mediaStatus==mediaLength){
                 matomoTracker?.track(eventWithCategory:mediaType, action:"stop",name: mediaTitle)
-                matomoTracker?.dispatch()
             }
-            
-
+    
             var uid =  ""
-            
             if var userId = matomoTracker?.userId {
                 uid = userId
             } else {
                 uid = ""
             }
             
-           
             let baseUrl = baseURL
             var query = "idsite=\(encodeParameter(value: siteId))" +
                         "&rec=1" +
@@ -213,22 +205,19 @@ class ReactNativeMatomoTracker: NSObject {
                         "&uid=\(encodeParameter(value: uid))"
             
             if(!dimensions.isEmpty){
-            
+              
               for dimension in dimensions {
                 if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
-                    // Attempt to parse the JSON value
-                    if let data = value.data(using: .utf8),
-                       let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                        // Convert jsonObject to a string or handle as needed
-                        let jsonValueString = jsonObject.map { "\($0.key)=\($0.value)" }.joined(separator: ",")
-                        query += "&\(key)=\(encodeParameter(value: jsonValueString))"
+                    if let id = Int(key) {
+                        matomoTracker?.setDimension(value, forIndex: id)
+                        matomoTracker?.dispatch()
                     } else {
-                        query += "&\(key)=\(encodeParameter(value: value))"
+                        print("Key could not be converted to an Int")
                     }
                 }
               }
-                
             }
+        
             
 //            if(!customVariable.isEmpty){
 //             
@@ -283,6 +272,7 @@ class ReactNativeMatomoTracker: NSObject {
                 }
                 task.resume()
             }
+            matomoTracker?.dispatch()
         }
     }
     
