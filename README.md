@@ -349,6 +349,22 @@ trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo
 
 ```
 
+### trackCustomDimension()
+
+With Custom Dimensions you can assign any custom data to your visitors or actions (like pages, events, site search, ...) and then visualize the reports of how many visits, conversions, pageviews, etc. there were for each Custom Dimension.
+
+Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)  
+
+#### Examples
+
+```js
+
+trackCustomDimension({ 
+  dimensions:[{key:"1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"},{key:"2",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]
+});
+
+```
+
 ## Methods
 
 
@@ -371,6 +387,7 @@ trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo
 | [setLogger](#setlogger)              | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |
 | [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String, dimensions : [object]                                            |    ✅   |  ✅  |    ✅      |   ✅     |
 | [trackCampaign](#trackcampaign)      | title: String, campaignUrl: String                        |    ✅   |  ✅  |    ✅      |   ✅     |
+| [trackCustomDimension](#trackcustomdimension)      | dimensions:[{key:string,value:string}]                        |    ✅   |  ✅  |    ✅      |   ✅     |
 
 
 <!-- ## Contributing

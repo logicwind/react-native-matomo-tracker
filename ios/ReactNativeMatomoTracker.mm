@@ -43,7 +43,7 @@ RCT_EXTERN_METHOD(trackCampaign:(NSString *)title withCampaignUrl:(NSString *)ca
 
 RCT_EXTERN_METHOD(trackMedia:(NSString *)siteId withMediaId:(NSString *)mediaId withMediaTitle:(NSString *)mediaTitle withPlayerName:(NSString *)playerName withMediaType:(NSString *)mediaType withMediaResource:(NSString *)mediaResource withMediaStatus:(NSString *)mediaStatus withMediaLength:(NSString *)mediaLength withMediaProgress:(NSString *)mediaProgress withMediaTTP:(NSString *)mediaTTP withMediaWidth:(NSString *)mediaWidth withMediaHeight:(NSString *)mediaHeight withMediaSE:(NSString *)mediaSE withMediaFullScreen:(NSString *)mediaFullScreen  withDimensions:(NSArray<NSDictionary *> *)dimensions)
 
-
+RCT_EXTERN_METHOD(trackCustomDimension:(NSArray<NSDictionary *> *)dimensions)
 
 + (BOOL)requiresMainQueueSetup
 {
