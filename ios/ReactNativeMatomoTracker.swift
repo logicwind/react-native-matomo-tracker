@@ -157,6 +157,25 @@ class ReactNativeMatomoTracker: NSObject {
     }
   
     
+    @objc(trackCustomDimension:)
+    func trackCustomDimension(
+        dimensions:[NSDictionary]
+    ) {
+        if(!dimensions.isEmpty){
+            matomoTracker?.track(view: ["customDimension"])
+          for dimension in dimensions {
+            if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
+                if let id = Int(key) {
+                    matomoTracker?.setDimension(value, forIndex: id)
+                    matomoTracker?.dispatch()
+                } else {
+                    print("Key could not be converted to an Int")
+                }
+            }
+          }
+        }
+    }
+    
     @objc(trackMedia:withMediaId:withMediaTitle:withPlayerName:withMediaType:withMediaResource:withMediaStatus:withMediaLength:withMediaProgress:withMediaTTP:withMediaWidth:withMediaHeight:withMediaSE:withMediaFullScreen:withDimensions:)
     func trackMediaEvent(
         siteId: String,

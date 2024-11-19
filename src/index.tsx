@@ -104,6 +104,14 @@ export function trackMediaEvent(
   return ReactNativeMatomoTracker.trackMedia(siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength,mediaProgress,mediaTTP,mediaWidth,mediaHeight,mediaSE,mediaFullScreen,dimensions);
 }
 
+export function trackCustomDimension(
+  {dimensions=[]}:{  
+    dimensions?: Array<Object>
+  }): Promise<number> {
+    return ReactNativeMatomoTracker.trackCustomDimension(dimensions);
+  }
+
+
 export const MediaType = { VIDEO: 'video',AUDIO:"audio"};
 
 

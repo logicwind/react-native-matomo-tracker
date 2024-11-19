@@ -19,6 +19,7 @@ import {
   setVisitorId,
   startSession,
   trackCampaign,
+  trackCustomDimension,
   trackDispatch,
   trackDownload,
   trackEvent,
@@ -186,11 +187,22 @@ export default function App() {
             style={styles.button}
             onPress={() => {
               trackMediaEvent({ siteId: "siteId", mediaId: Date.now.toString(), mediaTitle: "video media play track", playerName: "test 08", mediaType: MediaType.VIDEO, mediaResource: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", mediaStatus: "100", mediaLength: "100", mediaFullScreen: "1", mediaHeight: "720", mediaWidth: "1080", mediaProgress: "100",
-              dimensions:[{key:"dimension1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]
+              dimensions:[{key:"1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]
             });
             }}
           >
             <Text style={styles.buttonText}>Video Play Stop</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              trackCustomDimension({ 
+              dimensions:[{key:"1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"},{key:"2",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]
+            });
+            }}
+          >
+            <Text style={styles.buttonText}>Track Custom Dimension</Text>
           </Pressable>
 
           <Pressable
