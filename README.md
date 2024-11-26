@@ -30,6 +30,10 @@ Run `npx pod-install`. Linking is not required in React Native 0.70 and above.
 
 Run `npx pod-install`. Linking is not required in React Native 0.70 and above.
 
+### Create Custom dimension  
+
+Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)  
+
 
 ## Usage
 
@@ -66,7 +70,7 @@ for matomo-url madatory to add `/matomo.php` end of url.
 - **Generate Auth Token**  
   [Generate auth token guide here](https://matomo.org/faq/general/faq_114/)
 
-#### Examples
+#### Example
 
 ```js
 
@@ -75,7 +79,7 @@ for matomo-url madatory to add `/matomo.php` end of url.
 ```
 
 
-#### Examples with Auth Token
+#### Example with Auth Token
 
 ```js
 
@@ -87,7 +91,7 @@ for matomo-url madatory to add `/matomo.php` end of url.
 
 The MatomoTracker starts a new session whenever the application starts. If you want to start a new session manually, you can use the startSession() function.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -98,9 +102,9 @@ startSession()
 
 ### trackScreen()
 
-The trackScreen method is used to track screen views within a React Native application. It will take `screen name` and `title` parameter.
+The trackScreen method is used to track screen views within a React Native application. It will take `screen name`,`title` with the optional parameter `actionDimensions`.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -108,11 +112,30 @@ trackScreen("HomeScreen","Navigate to home screen")
 
 ```
 
+#### Example with Action Custom Dimensions
+
+```js
+
+trackScreen("HomeScreen","Navigate to home screen",{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              })
+
+```
+
 ### trackEvent()
 
-The trackEvent method is used to track custom events within a React Native application. It will take `category`,`action`,`name` and `value` parameter.
+The trackEvent method is used to track custom events within a React Native application. It will take `category`,`action`,`name` ,`value` with the optional parameter `actionDimensions`.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -120,8 +143,27 @@ trackEvent("test category","test action"," test name",2);
 
 ```
 
+#### Example with Action Custom Dimensions
 
-#### Custom data traking with track event
+```js
+
+trackEvent("test category","test action"," test name",2,{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              });
+
+```
+
+
+#### Custom data tracking with track event
 
 ```js
 
@@ -134,11 +176,39 @@ size: 'L',
 
 ```
 
+#### Example with Action Custom Dimensions
+
+```js
+
+trackEvent("basket",JSON.stringify({
+id: 3745092,
+item: 'mens grey t-shirt',
+description: ['round neck', 'long sleeved'],
+size: 'L',
+}),
+'',
+0,
+{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              }
+);
+
+```
+
 ### trackOutlink()
 
-The trackOutlink method is used to track clicks on outbound links within a React Native application. It will take only `url` parameter.
+The trackOutlink method is used to track clicks on outbound links within a React Native application. It will take only `url` with the optional parameter `actionDimensions`.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -146,23 +216,61 @@ trackOutlink("https://www.google.com/")
 
 ```
 
+#### Example with Action Custom Dimensions
+
+```js
+
+trackOutlink("https://www.google.com/",{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              })
+
+```
+
+
 ### trackSearch()
 
-The trackSearch method is used to track search keyword within a React Native application. It will take only `keyword` parameter.
+The trackSearch method is used to track search keyword within a React Native application. It will take only `keyword` with the optional parameter `actionDimensions`.
 
-#### Examples
+#### Example
 
 ```js
 
 trackImpression("Logicwind")
 
 ```
+#### Example with Action Custom Dimensions
+
+```js
+
+trackImpression("Logicwind",{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              })
+
+```
 
 ### trackImpression()
 
-The trackImpression method is used to track specific content or elements within a React Native application. It will take only `contentName` parameter.
+The trackImpression method is used to track specific content or elements within a React Native application. It will take only `contentName` with the optional parameter `actionDimensions`.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -170,11 +278,30 @@ trackImpression("Test Track Impression")
 
 ```
 
+#### Example with Action Custom Dimensions
+
+```js
+
+trackImpression("Test Track Impression",{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              })
+
+```
+
 ### trackInteraction()
 
-The trackInteraction method is used to track  users engage with specific elements or perform actions within a React Native application. It will take `contentName` and `contentInteraction`  parameter.
+The trackInteraction method is used to track  users engage with specific elements or perform actions within a React Native application. It will take `contentName` and `contentInteraction`  with the optional parameter `actionDimensions`.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -182,11 +309,30 @@ trackInteraction("Test Track interaction","test inetraction")
 
 ```
 
+#### Example with Action Custom Dimensions
+
+```js
+
+trackInteraction("Test Track interaction","test inetraction",{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              })
+
+```
+
 ### trackDownload()
 
-The trackDownload method is used to track  the download of files or resources within a React Native application. It will take  `category`,`action` and `download-url`  parameter.
+The trackDownload method is used to track  the download of files or resources within a React Native application. It will take  `category`,`action` and `download-url`  with the optional parameter `actionDimensions`.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -194,11 +340,30 @@ trackDownload("Download","PDF Download","https://example.com/download.pdf")
 
 ```
 
+#### Example with Action Custom Dimensions
+
+```js
+
+trackDownload("Download","PDF Download","https://example.com/download.pdf",{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              })
+
+```
+
 ### setUserId()
 
 The setUserId function is used to assign a unique identifier to a user in a React Native application. It will take `id`  parameter.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -211,7 +376,7 @@ setUserId("test@gmail.com")
 
 By default matomo generate the unique visitor id but if you want custom vistor id then setVisitorId function allows you to manually set a custom visitor ID for tracking purposes within a React Native application . It will take `visitor-id`  parameter. It must be a 16 character long hex string
 
-#### Examples
+#### Example
 
 ```js
 
@@ -223,7 +388,7 @@ setVisitorId("2c534f55fba6cf6e")
 
 The MatomoTracker will dispatch events every 30 seconds automatically. If you want to dispatch events manually, you can use the trackDispatch() function.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -235,7 +400,7 @@ trackDispatch()
 
 By default the tracking is enable. If you want to disable traking, you can use the disableTracking() function.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -247,7 +412,7 @@ disableTracking()
 
 The enableTracking function is used for enable traking.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -259,7 +424,7 @@ enableTracking()
 
 To enable logging for debugging purposes in the Matomo Android SDK and IOS SDK, you can set a custom logger. This is useful to see detailed logs of the SDK’s operations, which can help during development and troubleshooting.
 
-#### Examples
+#### Example
 
 ```js
 
@@ -289,18 +454,29 @@ trackMediaEvent function use to monitor user interactions with media content, su
 | dimensions| Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)    
 
 
-#### Examples
+#### Example
 
 ```js
 
-trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100", dimensions:[{key:"1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]});
+trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100", dimensions:{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              }});
 
 ```
 
 
  ### trackCampaign()
 
- Tracking campaigns usually involves recording information about user interactions that can be tied to specific marketing efforts, such as UTM parameters.It requires the parameters `title` and `campaignUrl`
+ Tracking campaigns usually involves recording information about user interactions that can be tied to specific marketing efforts, such as UTM parameters.It requires the parameters `title`,`campaignUrl` with the optional parameter `actionDimensions`
 
  - #### Default Campaign Tracking Values
 * Campaign (Required): mtm_campaign
@@ -341,11 +517,30 @@ If you already have URLs tagged with Google Analytics parameters these are also 
 * utm_content,
 * utm_id.
 
-#### Examples
+#### Example
 
 ```js
 
 trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo&mtm_source=google&mtm_medium=email&mtm_keyword=august promo&mtm_content=primary-cta")
+
+```
+
+#### Example with Action Custom Dimensions
+
+```js
+
+trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo&mtm_source=google&mtm_medium=email&mtm_keyword=august promo&mtm_content=primary-cta",{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              })
 
 ```
 
@@ -355,7 +550,7 @@ With Custom Dimensions you can assign any custom data to your visitors or action
 
 Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)  
 
-#### Examples
+#### Example
 
 ```js
 
@@ -365,6 +560,17 @@ trackCustomDimension({
 
 ```
 
+Dimensions  {
+      "dimension":{
+          "action":[
+              {"id":String}
+          ],
+          "visit":[
+             {"id":String}
+          ]
+      }
+}
+
 ## Methods
 
 
@@ -372,12 +578,12 @@ trackCustomDimension({
 |--------------------------------------|-----------------------------------------------------------|:-------:|:---:|:----------:|:--------:|:--------:|
 | [createTracker](#createtracker)      | uri: String, siteId: Number, token: String           |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
 | [startSession](#startsession)        | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackScreen](#trackscreen)          | screenName: String, title: String                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackEvent](#trackevent)            | category:String, action:String, name:String, value:Number |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackOutlink](#trackoutlink)        | url:String                                                |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackSearch](#tracksearch)          | keyword:String                                            |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackImpression](#trackimpression)  | contentName:String                                        |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackInteraction](#trackinteraction)| contentName:String, contentInteraction:String             |    ✅   |  ✅  |    ✅      |   ✅     |    ✅     |
+| [trackScreen](#trackscreen)          | screenName: String, title: String, dimensions:Dimensions                          |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackEvent](#trackevent)            | category:String, action:String, name:String, value:Number, dimensions:Dimensions  |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackOutlink](#trackoutlink)        | url:String, dimensions:Dimensions                                                |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackSearch](#tracksearch)          | keyword:String, dimensions:Dimensions                                            |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackImpression](#trackimpression)  | contentName:String, dimensions:Dimensions                                        |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackInteraction](#trackinteraction)| contentName:String, contentInteraction:String, dimensions:Dimensions              |    ✅   |  ✅  |    ✅      |   ✅     |    ✅     |
 | [trackDownload](#trackdownload)      | category:String, action:String, url:String                |    ✅   |  ✅  |    ✅      |   ✅     |    ✅     |
 | [setUserId](#setuserid)              | id:String                                                 |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
 | [setVisitorId](#setvisitorid)        | visitorId:String                                          |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
@@ -385,9 +591,9 @@ trackCustomDimension({
 | [disableTracking](#disabletracking)  | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
 | [enableTracking](#enabletracking)    | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
 | [setLogger](#setlogger)              | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String, dimensions : [object]                                            |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackCampaign](#trackcampaign)      | title: String, campaignUrl: String                        |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackCustomDimension](#trackcustomdimension)      | dimensions:[{key:string,value:string}]                        |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String, dimensions:Dimensions                                           |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackCampaign](#trackcampaign)      | title: String, campaignUrl: String, dimensions                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackCustomDimension](#trackcustomdimension)      | dimensions:Dimensions                        |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
 
 
 <!-- ## Contributing

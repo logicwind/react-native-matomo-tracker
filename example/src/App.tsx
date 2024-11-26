@@ -35,7 +35,7 @@ export default function App() {
   const [result] = React.useState<number | undefined>();
 
   React.useEffect(() => {
-    createTracker("https://your-domain-url/matomo.php", 1) //Replace 1 with your matomo site id
+    createTracker("https://your-matomo-url/matomo.php", 1) //Replace 1 with your matomo site id
     setLogger()
   }, []);
 
@@ -48,7 +48,18 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              trackCampaign("Home screen","rntestApp://home?mtm_campaign=2020_august_promo&mtm_source=google&mtm_medium=email&mtm_keyword=2020 august promo&mtm_content=primary-cta")
+              trackCampaign("Home screen","https://rntestApp://home?mtm_campaign=2020_august_promo&mtm_source=google&mtm_medium=email&mtm_keyword=2020 august promo&mtm_content=primary-cta",{
+              "dimension":{
+                "action":[
+                  {"1":"visit dimension 1"},
+                  {"2":"visit dimension 2"}
+                ],
+                "visit":[
+                  {"4":"action dimension 1"},
+                  {"5":"action dimension 2"}
+                ]
+               }
+              })
             }}
           >
             <Text style={styles.buttonText}>Track Campaign</Text>
@@ -65,8 +76,18 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              trackScreen('HomeScreen', 'This is test home screen');
-
+              trackScreen('HomeScreen', 'This is test home screen',{
+                "dimension":{
+                  "action":[
+                    {"1":"visit dimension 1"},
+                    {"2":"visit dimension 2"}
+                  ],
+                  "visit":[
+                    {"4":"action dimension 1"},
+                    {"5":"action dimension 2"}
+                  ]
+                 }
+              });
             }}
           >
             <Text style={styles.buttonText}>Track Screen</Text>
@@ -75,7 +96,18 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              trackEvent('test category', 'test action', ' test name', 2);
+              trackEvent('test category', 'test action', ' test name', 2,{
+                "dimension":{
+                  "action":[
+                    {"1":"visit dimension 1"},
+                    {"2":"visit dimension 2"}
+                  ],
+                  "visit":[
+                    {"4":"action dimension 1"},
+                    {"5":"action dimension 2"}
+                  ]
+                 }
+              });
               trackEvent(
                 'basket',
                 JSON.stringify({
@@ -83,7 +115,21 @@ export default function App() {
                   item: 'mens grey t-shirt',
                   description: ['round neck', 'long sleeved'],
                   size: 'L',
-                })
+                },),
+                '',
+                0,
+                {
+                  "dimension":{
+                    "action":[
+                      {"1":"visit dimension 1"},
+                      {"2":"visit dimension 2"}
+                    ],
+                    "visit":[
+                      {"4":"action dimension 1"},
+                      {"5":"action dimension 2"}
+                    ]
+                   }
+                }
               );
             }}
           >
@@ -101,7 +147,18 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              trackSearch('Logicwind');
+              trackSearch('Logicwind',{
+                "dimension":{
+                  "action":[
+                    {"1":"visit dimension 1"},
+                    {"2":"visit dimension 2"}
+                  ],
+                  "visit":[
+                    {"4":"action dimension 1"},
+                    {"5":"action dimension 2"}
+                  ]
+                 }
+              });
             }}
           >
             <Text style={styles.buttonText}>Track Search</Text>
@@ -110,7 +167,18 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              trackImpression('Test Track Impression');
+              trackImpression('Test Track Impression',{
+                "dimension":{
+                  "action":[
+                    {"1":"visit dimension 1"},
+                    {"2":"visit dimension 2"}
+                  ],
+                  "visit":[
+                    {"4":"action dimension 1"},
+                    {"5":"action dimension 2"}
+                  ]
+                 }
+              });
             }}
           >
             <Text style={styles.buttonText}>Track Impression</Text>
@@ -119,7 +187,18 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              trackInteraction('Test Track interaction', 'test inetraction');
+              trackInteraction('Test Track interaction', 'test inetraction',{
+                "dimension":{
+                  "action":[
+                    {"1":"visit dimension 1"},
+                    {"2":"visit dimension 2"}
+                  ],
+                  "visit":[
+                    {"4":"action dimension 1"},
+                    {"5":"action dimension 2"}
+                  ]
+                 }
+              });
             }}
           >
             <Text style={styles.buttonText}>Track Interaction</Text>
@@ -131,7 +210,19 @@ export default function App() {
               trackDownload(
                 'Download',
                 'PDF Download',
-                'https://example.com/download.pdf'
+                'https://example.com/download.pdf',
+                {
+                  "dimension":{
+                    "action":[
+                      {"1":"visit dimension 1"},
+                      {"2":"visit dimension 2"}
+                    ],
+                    "visit":[
+                      {"4":"action dimension 1"},
+                      {"5":"action dimension 2"}
+                    ]
+                   }
+                }
               );
             }}
           >
@@ -187,7 +278,18 @@ export default function App() {
             style={styles.button}
             onPress={() => {
               trackMediaEvent({ siteId: "siteId", mediaId: Date.now.toString(), mediaTitle: "video media play track", playerName: "test 08", mediaType: MediaType.VIDEO, mediaResource: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", mediaStatus: "100", mediaLength: "100", mediaFullScreen: "1", mediaHeight: "720", mediaWidth: "1080", mediaProgress: "100",
-              dimensions:[{key:"1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]
+              actionDimensions:{
+                "dimension":{
+                  "visit":[
+                    {"1":"visit dimension 1"},
+                    {"2":"visit dimension 2"}
+                  ],
+                  "action":[
+                    {"4":"action dimension 4"},
+                    {"5":"action dimension 5"}
+                  ]
+                 }
+              }
             });
             }}
           >
@@ -197,8 +299,12 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
+          
               trackCustomDimension({ 
-              dimensions:[{key:"1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"},{key:"2",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]
+              dimensions:[
+                {key:"4",value: "trackEvent"},
+                {key:"5",value: "trackEvent"},
+            ]
             });
             }}
           >
