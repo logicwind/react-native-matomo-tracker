@@ -102,7 +102,7 @@ startSession()
 
 ### trackScreen()
 
-The trackScreen method is used to track screen views within a React Native application. It will take `screen name`,`title` with the optional parameter `actionDimensions`.
+The trackScreen method is used to track screen views within a React Native application. It will take `screen name`,`title` with the optional parameter `dimension`.
 
 #### Example
 
@@ -133,7 +133,7 @@ trackScreen("HomeScreen","Navigate to home screen",{
 
 ### trackEvent()
 
-The trackEvent method is used to track custom events within a React Native application. It will take `category`,`action`,`name` ,`value` with the optional parameter `actionDimensions`.
+The trackEvent method is used to track custom events within a React Native application. It will take `category`,`action`,`name` ,`value` with the optional parameter `dimension`.
 
 #### Example
 
@@ -206,7 +206,7 @@ size: 'L',
 
 ### trackOutlink()
 
-The trackOutlink method is used to track clicks on outbound links within a React Native application. It will take only `url` with the optional parameter `actionDimensions`.
+The trackOutlink method is used to track clicks on outbound links within a React Native application. It will take only `url` with the optional parameter `dimension`.
 
 #### Example
 
@@ -238,7 +238,7 @@ trackOutlink("https://www.google.com/",{
 
 ### trackSearch()
 
-The trackSearch method is used to track search keyword within a React Native application. It will take only `keyword` with the optional parameter `actionDimensions`.
+The trackSearch method is used to track search keyword within a React Native application. It will take only `keyword` with the optional parameter `dimension`.
 
 #### Example
 
@@ -268,7 +268,7 @@ trackImpression("Logicwind",{
 
 ### trackImpression()
 
-The trackImpression method is used to track specific content or elements within a React Native application. It will take only `contentName` with the optional parameter `actionDimensions`.
+The trackImpression method is used to track specific content or elements within a React Native application. It will take only `contentName` with the optional parameter `dimension`.
 
 #### Example
 
@@ -299,7 +299,7 @@ trackImpression("Test Track Impression",{
 
 ### trackInteraction()
 
-The trackInteraction method is used to track  users engage with specific elements or perform actions within a React Native application. It will take `contentName` and `contentInteraction`  with the optional parameter `actionDimensions`.
+The trackInteraction method is used to track  users engage with specific elements or perform actions within a React Native application. It will take `contentName` and `contentInteraction`  with the optional parameter `dimension`.
 
 #### Example
 
@@ -330,7 +330,7 @@ trackInteraction("Test Track interaction","test inetraction",{
 
 ### trackDownload()
 
-The trackDownload method is used to track  the download of files or resources within a React Native application. It will take  `category`,`action` and `download-url`  with the optional parameter `actionDimensions`.
+The trackDownload method is used to track  the download of files or resources within a React Native application. It will take  `category`,`action` and `download-url`  with the optional parameter `dimension`.
 
 #### Example
 
@@ -476,7 +476,7 @@ trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media pla
 
  ### trackCampaign()
 
- Tracking campaigns usually involves recording information about user interactions that can be tied to specific marketing efforts, such as UTM parameters.It requires the parameters `title`,`campaignUrl` with the optional parameter `actionDimensions`
+ Tracking campaigns usually involves recording information about user interactions that can be tied to specific marketing efforts, such as UTM parameters.It requires the parameters `title`,`campaignUrl` with the optional parameter `dimension`
 
  - #### Default Campaign Tracking Values
 * Campaign (Required): mtm_campaign
@@ -560,7 +560,36 @@ trackCustomDimension({
 
 ```
 
-Dimensions  {
+
+
+## Methods
+
+
+| Method                               | Required Parameter                                          | Android | ios | Android TV | Apple TV | Fire TV |
+|--------------------------------------|-----------------------------------------------------------|:-------:|:---:|:----------:|:--------:|:--------:|
+| [createTracker](#createtracker)      | uri: String, siteId: Number, token: String           |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [startSession](#startsession)        | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackScreen](#trackscreen)          | screenName: String, title: String, dimensions:Dimension                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackEvent](#trackevent)            | category:String, action:String, name:String, value:Number, dimensions:Dimension  |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackOutlink](#trackoutlink)        | url:String, dimensions:Dimension                                                |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackSearch](#tracksearch)          | keyword:String, dimensions:Dimension                                            |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackImpression](#trackimpression)  | contentName:String, dimensions:Dimension                                        |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackInteraction](#trackinteraction)| contentName:String, contentInteraction:String, dimensions:Dimension              |    ✅   |  ✅  |    ✅      |   ✅     |    ✅     |
+| [trackDownload](#trackdownload)      | category:String, action:String, url:String                |    ✅   |  ✅  |    ✅      |   ✅     |    ✅     |
+| [setUserId](#setuserid)              | id:String                                                 |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [setVisitorId](#setvisitorid)        | visitorId:String                                          |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackDispatch](#trackdispatch)      | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [disableTracking](#disabletracking)  | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [enableTracking](#enabletracking)    | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [setLogger](#setlogger)              | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String, dimensions:Dimension                                           |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackCampaign](#trackcampaign)      | title: String, campaignUrl: String, dimensions:[{key:string,value:string}]                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+| [trackCustomDimension](#trackcustomdimension)      | dimensions:Dimension                        |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
+
+## Dimension Object Property 
+
+```js
+Dimension :  {
       "dimension":{
           "action":[
               {"id":String}
@@ -571,30 +600,7 @@ Dimensions  {
       }
 }
 
-## Methods
-
-
-| Method                               | Required Parameter                                          | Android | ios | Android TV | Apple TV | Fire TV |
-|--------------------------------------|-----------------------------------------------------------|:-------:|:---:|:----------:|:--------:|:--------:|
-| [createTracker](#createtracker)      | uri: String, siteId: Number, token: String           |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [startSession](#startsession)        | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackScreen](#trackscreen)          | screenName: String, title: String, dimensions:Dimensions                          |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackEvent](#trackevent)            | category:String, action:String, name:String, value:Number, dimensions:Dimensions  |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackOutlink](#trackoutlink)        | url:String, dimensions:Dimensions                                                |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackSearch](#tracksearch)          | keyword:String, dimensions:Dimensions                                            |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackImpression](#trackimpression)  | contentName:String, dimensions:Dimensions                                        |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackInteraction](#trackinteraction)| contentName:String, contentInteraction:String, dimensions:Dimensions              |    ✅   |  ✅  |    ✅      |   ✅     |    ✅     |
-| [trackDownload](#trackdownload)      | category:String, action:String, url:String                |    ✅   |  ✅  |    ✅      |   ✅     |    ✅     |
-| [setUserId](#setuserid)              | id:String                                                 |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [setVisitorId](#setvisitorid)        | visitorId:String                                          |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackDispatch](#trackdispatch)      | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [disableTracking](#disabletracking)  | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [enableTracking](#enabletracking)    | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [setLogger](#setlogger)              | -                                                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackMediaEvent](#trackmediaevent)  |  siteId: String, mediaId: String, mediaTitle: String, playerName: String, mediaType: String, mediaResource: String, mediaStatus: String,mediaLength?:String, mediaProgress?:String, mediaTTP?: String, mediaWidth?: String, mediaHeight?: String, mediaSE?: String, mediaFullScreen?:String, dimensions:Dimensions                                           |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackCampaign](#trackcampaign)      | title: String, campaignUrl: String, dimensions                         |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-| [trackCustomDimension](#trackcustomdimension)      | dimensions:Dimensions                        |    ✅   |  ✅  |    ✅      |   ✅     |   ✅     |
-
+```
 
 <!-- ## Contributing
 

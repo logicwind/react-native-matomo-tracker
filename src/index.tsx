@@ -89,7 +89,7 @@ export function trackCampaign(title:String,campaignUrl:String,actionDimensions?:
 }
 
 export function trackMediaEvent(
-{siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength="",mediaProgress="",mediaTTP="",mediaWidth="",mediaHeight="",mediaSE="",mediaFullScreen="",actionDimensions}:{  
+{siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength="",mediaProgress="",mediaTTP="",mediaWidth="",mediaHeight="",mediaSE="",mediaFullScreen="",dimension}:{  
   siteId: String,
   mediaId: String,
   mediaTitle: String,
@@ -105,9 +105,9 @@ export function trackMediaEvent(
   mediaSE?: String,
   mediaFullScreen?:String,
   customVariable?:String,
-  actionDimensions?: DimensionData
+  dimension?: DimensionData
 }): Promise<number> {
-  return ReactNativeMatomoTracker.trackMedia(siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength,mediaProgress,mediaTTP,mediaWidth,mediaHeight,mediaSE,mediaFullScreen,actionDimensions);
+  return ReactNativeMatomoTracker.trackMedia(siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength,mediaProgress,mediaTTP,mediaWidth,mediaHeight,mediaSE,mediaFullScreen,dimension);
 }
 
 export function trackCustomDimension(
