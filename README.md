@@ -30,32 +30,32 @@ Run `npx pod-install`. Linking is not required in React Native 0.70 and above.
 
 Run `npx pod-install`. Linking is not required in React Native 0.70 and above.
 
-### Create Custom dimension  
+### Create Custom dimension
 
-Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)  
+Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)
 
 
 ## Usage
 
 ```js
-import { 
-createTracker, 
+import {
+createTracker,
 setUserId,
-setVisitorId, 
-trackDispatch, 
-trackDownload, 
-trackEvent, 
-trackImpression, 
-trackInteraction, 
-trackScreen, 
-trackSearch, 
+setVisitorId,
+trackDispatch,
+trackDownload,
+trackEvent,
+trackImpression,
+trackInteraction,
+trackScreen,
+trackSearch,
 disableTracking,
-enableTracking, 
+enableTracking,
 startSession,
 trackMediaEvent,
 trackCampaign
 } from '@logicwind/react-native-matomo-tracker';
-     
+
 ```
 
 ### createTracker()
@@ -64,10 +64,10 @@ The createTracker function is used to instantiate a tracker object for Matomo an
 
  <!-- If you want to create matomo auth_token refere this link https://matomo.org/faq/general/faq_114/ -->
 
-#### note 
+#### note
 for matomo-url madatory to add `/matomo.php` end of url.
 
-- **Generate Auth Token**  
+- **Generate Auth Token**
   [Generate auth token guide here](https://matomo.org/faq/general/faq_114/)
 
 #### Example
@@ -451,7 +451,7 @@ trackMediaEvent function use to monitor user interactions with media content, su
 | mediaHeight    | The resolution height of the media in pixels. Only recommended being set for videos.                            |
 | mediaFullScreen| Should be 0 or 1 and defines whether the media is currently viewed in full screen. Only recommended being set for videos.                            |
 | mediaSE        | An optional comma separated list of which positions within a media a user has played. For example if the user has viewed position 5s, 10s, 15s and 35s, then you would need to send 5,10,15,35. We recommend to round to the next 5 seconds and not send a value for each second. Internally, Matomo may round to the next 15 or 30 seconds. For performance optimisation we recommend not sending the same position twice. Meaning if you have sent ma_se=10 there is no need to send later ma_se=10,20 but instead only ma_se=20.                             |
-| dimensions| Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)    
+| dimensions| Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)
 
 
 #### Example
@@ -548,13 +548,13 @@ trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo
 
 With Custom Dimensions you can assign any custom data to your visitors or actions (like pages, events, site search, ...) and then visualize the reports of how many visits, conversions, pageviews, etc. there were for each Custom Dimension.
 
-Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)  
+Dimension contains a key and a value, and where the key is a custom dimension id created on the Matomo dashboard and the value should be a string, you'll need to ensure that the dimensions array is processed correctly. [create custom dimension](https://matomo.org/faq/reporting-tools/create-track-and-manage-custom-dimensions/)
 
 #### Example
 
 ```js
 
-trackCustomDimension({ 
+trackCustomDimension({
   dimensions:[{key:"1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"},{key:"2",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]
 });
 
@@ -609,7 +609,7 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 
 <br>To generate a token_auth follow these steps:</br>
 
-* Log in to Matomo 
+* Log in to Matomo
 * Go to the Matomo Admin through the top menu
 * Click on Personal -> Security
 * At the bottom of the page click on “Create new token”
@@ -629,6 +629,12 @@ Click on “Create new token”
 <br>Here's the bot list of Matomo's bot detector: <a href="https://github.com/matomo-org/device-detector?tab=readme-ov-file#what-device-detector-is-able-to-detect">click here</a></br>
 
 </details>
+
+
+## react-native-matomo-tracker is crafted mindfully at [Logicwind](https://www.logicwind.com?utm_source=github&utm_medium=github.com-logicwind&utm_campaign=react-native-matomo-tracker)
+We are a 130+ people company developing and designing multiplatform applications using the Lean & Agile methodology. To get more information on the solutions that would suit your needs, feel free to get in touch by [email](mailto:sales@logicwind.com) or through or [contact form](https://www.logicwind.com/book-call?utm_source=github&utm_medium=github.com-logicwind&utm_campaign=react-native-matomo-tracker)!
+
+We will always answer you with pleasure 😁
 
 ## License
 
