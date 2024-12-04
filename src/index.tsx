@@ -21,36 +21,36 @@ export function createTracker(uri: String="", siteId: Number=0,token:String="") 
     return ReactNativeMatomoTracker.createTracker(uri, Platform.OS=="ios"?siteId?.toString() :siteId,token);
 }
 
-export function trackScreen(screenName: String, title: String) {
-  return ReactNativeMatomoTracker.trackScreen(screenName, title);
+export function trackScreen(screenName: String, title: String,actionDimensions?:Array<Object>) {
+  return ReactNativeMatomoTracker.trackScreen(screenName, title,actionDimensions??[]);
 }
 
-export function trackEvent(category:String,action:String,name:String="",value:Number=0) {
-  return ReactNativeMatomoTracker.trackEvent(category,action,name,value);
+export function trackEvent(category:String,action:String,name:String="",value:Number=0,actionDimensions?:Array<Object>) {
+  return ReactNativeMatomoTracker.trackEvent(category,action,name,value,actionDimensions??[]);
 }
 
 export function trackDispatch(){
   return ReactNativeMatomoTracker.trackDispatch();
 }
 
-export function trackOutlink(url:String) {
-  return ReactNativeMatomoTracker.trackOutlink(url);
+export function trackOutlink(url:String,actionDimensions?:Array<Object>) {
+  return ReactNativeMatomoTracker.trackOutlink(url,actionDimensions??[]);
 }
 
-export function trackSearch(keyword:String) {
-  return ReactNativeMatomoTracker.trackSearch(keyword);
+export function trackSearch(keyword:String,actionDimensions?:Array<Object>) {
+  return ReactNativeMatomoTracker.trackSearch(keyword,actionDimensions??[]);
 }
 
-export function trackImpression(contentName:String){
-  return ReactNativeMatomoTracker.trackImpression(contentName);
+export function trackImpression(contentName:String,actionDimensions?:Array<Object>){
+  return ReactNativeMatomoTracker.trackImpression(contentName,actionDimensions??[]);
 }
 
-export function trackInteraction(contentName:String,contentInteraction:String) {
-  return ReactNativeMatomoTracker.trackInteraction(contentName,contentInteraction);
+export function trackInteraction(contentName:String,contentInteraction:String,actionDimensions?:Array<Object>) {
+  return ReactNativeMatomoTracker.trackInteraction(contentName,contentInteraction,actionDimensions??[]);
 }
 
-export function trackDownload(category:String,action:String,url:String){
-  return ReactNativeMatomoTracker.trackDownload(category,action,url);
+export function trackDownload(category:String,action:String,url:String,actionDimensions?:Array<Object>){
+  return ReactNativeMatomoTracker.trackDownload(category,action,url,actionDimensions??[]);
 }
 
 export function setUserId(id:String) {
@@ -78,12 +78,12 @@ export function startSession() {
   return ReactNativeMatomoTracker.startSession();
 }
 
-export function trackCampaign(title:String,campaignUrl:String) {
-  return ReactNativeMatomoTracker.trackCampaign(title,campaignUrl);
+export function trackCampaign(title:String,campaignUrl:String,actionDimensions?:Array<Object>) {
+  return ReactNativeMatomoTracker.trackCampaign(title,campaignUrl,actionDimensions??{});
 }
 
 export function trackMediaEvent(
-{siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength="",mediaProgress="",mediaTTP="",mediaWidth="",mediaHeight="",mediaSE="",mediaFullScreen="",dimensions=[]}:{  
+{siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength="",mediaProgress="",mediaTTP="",mediaWidth="",mediaHeight="",mediaSE="",mediaFullScreen="",dimension}:{  
   siteId: String,
   mediaId: String,
   mediaTitle: String,
@@ -99,9 +99,9 @@ export function trackMediaEvent(
   mediaSE?: String,
   mediaFullScreen?:String,
   customVariable?:String,
-  dimensions?: Array<Object>
+  dimension?: Array<Object>
 }): Promise<number> {
-  return ReactNativeMatomoTracker.trackMedia(siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength,mediaProgress,mediaTTP,mediaWidth,mediaHeight,mediaSE,mediaFullScreen,dimensions);
+  return ReactNativeMatomoTracker.trackMedia(siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength,mediaProgress,mediaTTP,mediaWidth,mediaHeight,mediaSE,mediaFullScreen,dimension);
 }
 
 export function trackCustomDimension(
