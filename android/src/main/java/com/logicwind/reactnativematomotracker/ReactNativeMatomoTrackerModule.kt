@@ -81,7 +81,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun trackScreen(screenName:String,title:String,dimensions:ReadableMap) {
+  fun trackScreen(screenName:String,title:String,dimensions:ReadableArray) {
     if (tracker != null) {
       val trackBuilder = TrackHelper.track()
       trackActionCustomDimension(dimensions,trackBuilder)
@@ -90,7 +90,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun trackEvent(category:String,action:String,name:String,value:Float,dimensions:ReadableMap) {
+  fun trackEvent(category:String,action:String,name:String,value:Float,dimensions:ReadableArray) {
     if (tracker != null) {
       val trackBuilder = TrackHelper.track()
       trackActionCustomDimension(dimensions,trackBuilder)
@@ -106,7 +106,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
 
   @ReactMethod
-  fun trackOutlink(url:String,dimensions: ReadableMap) {
+  fun trackOutlink(url:String,dimensions: ReadableArray) {
     val validUrl = URL(url)
     if (tracker != null) {
       val trackBuilder = TrackHelper.track()
@@ -118,7 +118,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun trackSearch(keyword:String,dimensions: ReadableMap) {
+  fun trackSearch(keyword:String,dimensions: ReadableArray) {
     if (tracker != null) {
       val trackBuilder = TrackHelper.track()
       trackActionCustomDimension(dimensions,trackBuilder)
@@ -129,7 +129,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun trackImpression(contentName:String,dimensions: ReadableMap) {
+  fun trackImpression(contentName:String,dimensions: ReadableArray) {
     if (tracker != null) {
       val trackBuilder = TrackHelper.track()
       trackActionCustomDimension(dimensions,trackBuilder)
@@ -141,7 +141,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
 
 
   @ReactMethod
-  fun trackInteraction(contentName:String,contentInteraction:String,dimensions: ReadableMap) {
+  fun trackInteraction(contentName:String,contentInteraction:String,dimensions: ReadableArray) {
     if (tracker != null) {
       val trackBuilder = TrackHelper.track()
       trackActionCustomDimension(dimensions,trackBuilder)
@@ -152,7 +152,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun trackDownload(category: String,action: String,url: String,dimensions: ReadableMap) {
+  fun trackDownload(category: String,action: String,url: String,dimensions: ReadableArray) {
     if (tracker != null) {
       val trackBuilder = TrackHelper.track()
       trackActionCustomDimension(dimensions,trackBuilder)
@@ -169,7 +169,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun trackScreens(dimensions: ReadableMap) {
+  fun trackScreens(dimensions: ReadableArray) {
     if (tracker != null) {
       val trackBuilder = TrackHelper.track()
       trackActionCustomDimension(dimensions,trackBuilder)
@@ -178,7 +178,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun trackGoal(goalId:Int,revenue:Float,dimensions: ReadableMap) {
+  fun trackGoal(goalId:Int,revenue:Float,dimensions: ReadableArray) {
     if (tracker != null) {
       val trackBuilder = TrackHelper.track()
       trackActionCustomDimension(dimensions,trackBuilder)
@@ -225,13 +225,8 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun trackCampaign(title:String, campaignUrl: String,dimensions:ReadableMap) {
+  fun trackCampaign(title:String, campaignUrl: String,dimensions:ReadableArray) {
 
-    val action = dimensions.getMap("dimension")?.getArray("action")?.toArrayList()
-      ?.map { it as Map<String, String> } ?: emptyList()
-
-    val visit = dimensions.getMap("dimension")?.getArray("visit")?.toArrayList()
-      ?.map { it as Map<String, String> } ?: emptyList()
 
 
     if (tracker != null) {
@@ -243,17 +238,14 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
         "&url=${encode(campaignUrl)}" +
         "&action_name=${title}"
 
-        if(action.isNotEmpty()){
-          action.forEach { map ->
-            map.forEach { (key, value) ->
+      if (dimensions.size() > 0) {
+        for (i in 0 until dimensions.size()) {
+          val dimension = dimensions.getMap(i)
+          val key = dimension?.getString("key")
+          val value = dimension?.getString("value")
+          if (key != null && value != null) {
               query=query+"&dimension${key}=${value}"
-            }
           }
-        }
-
-      visit.forEach { map ->
-        map.forEach { (key, value) ->
-          query=query+"&dimension${key}=${value}"
         }
       }
 
@@ -289,16 +281,17 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   fun trackCustomDimension(
     dimensions: ReadableArray
   ) {
+
+    val trackBuilder = TrackHelper.track()
     if (dimensions.size() > 0) {
       for (i in 0 until dimensions.size()) {
         val dimension = dimensions.getMap(i)
         val key = dimension?.getString("key")
         val value = dimension?.getString("value")
         if (key != null && value != null) {
-
           val id = key.toIntOrNull()
           if (id != null) {
-            TrackHelper.track().screen("/customDimension").dimension(id,value).with(tracker)
+            trackBuilder.dimension(id,value)
             trackDispatch();
           } else {
             println("Key could not be converted to an Int")
@@ -306,6 +299,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
         }
       }
     }
+    trackBuilder.screen("/customDimension").with(tracker)
   }
 
   @ReactMethod
@@ -324,16 +318,18 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
     mediaHeight: String,
     mediaSE: String,
     mediaFullScreen:String,
-    actionDimensions: ReadableMap
+    actionDimensions: ReadableArray
   ) {
 
     if(siteId.isNotEmpty() && tracker!=null){
+      val trackBuilder = TrackHelper.track()
+      trackActionCustomDimension(actionDimensions,trackBuilder)
       if(mediaStatus=="0") {
-        TrackHelper.track().event(mediaType, "play").name(mediaTitle).with(tracker)
+        trackBuilder.event(mediaType, "play").name(mediaTitle).with(tracker)
         trackDispatch()
       }
       if(mediaStatus==mediaLength && mediaStatus==mediaProgress) {
-        TrackHelper.track().event(mediaType, "stop").name(mediaTitle).with(tracker)
+        trackBuilder.event(mediaType, "stop").name(mediaTitle).with(tracker)
         trackDispatch()
       }
 
@@ -358,29 +354,7 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
         "&ma_mt=${encode(mediaType)}" +
         "&ma_re=${encode(mediaResource)}"+
         "&ma_st=${encode(mediaStatus)}"
-
-
-      val action = actionDimensions.getMap("dimension")?.getArray("action")?.toArrayList()
-        ?.map { it as Map<String, String> } ?: emptyList()
-
-      val visit = actionDimensions.getMap("dimension")?.getArray("visit")?.toArrayList()
-        ?.map { it as Map<String, String> } ?: emptyList()
-
-      if(action.isNotEmpty()){
-        action.forEach { map ->
-          map.forEach { (key, value) ->
-            query=query+"&dimension${key}=${value}"
-          }
-        }
-      }
-
-      visit.forEach { map ->
-        map.forEach { (key, value) ->
-          query=query+"&dimension${key}=${value}"
-        }
-      }
-
-      "&_id=${encode(tracker?.visitorId.toString())}"
+        "&_id=${encode(tracker?.visitorId.toString())}"
 
 
       if(mediaLength.isNotEmpty()){
@@ -437,33 +411,22 @@ class ReactNativeMatomoTrackerModule(reactContext: ReactApplicationContext) :
   }
 
   fun trackActionCustomDimension(
-    dimensions: ReadableMap,
+    dimensions: ReadableArray,
     matomoTracker: TrackHelper
   ): TrackHelper {
-    val action = dimensions.getMap("dimension")?.getArray("action")?.toArrayList()
-      ?.map { it as Map<String, String> } ?: emptyList()
-
-    val visit = dimensions.getMap("dimension")?.getArray("visit")?.toArrayList()
-      ?.map { it as Map<String, String> } ?: emptyList()
-
-    if(action.isNotEmpty()){
-      action.forEach { map ->
-        map.forEach { (key, value) ->
-          val id = key.toIntOrNull() ?: 0
-          matomoTracker.dimension(id,value)
+    if (dimensions.size() > 0) {
+      for (i in 0 until dimensions.size()) {
+        val dimension = dimensions.getMap(i)
+        val key = dimension?.getString("key")
+        val value = dimension?.getString("value")
+        if (key != null && value != null) {
+          val id = key.toIntOrNull()
+          if (id != null) {
+            matomoTracker.dimension(id,value)
+          }
         }
       }
     }
-
-    if(visit.isNotEmpty()) {
-      visit.forEach { map ->
-        map.forEach { (key, value) ->
-          val id = key.toIntOrNull() ?: 0
-          matomoTracker.dimension(id, value)
-        }
-      }
-    }
-
     return matomoTracker;
   }
 

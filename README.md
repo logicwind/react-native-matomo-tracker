@@ -116,18 +116,12 @@ trackScreen("HomeScreen","Navigate to home screen")
 
 ```js
 
-trackScreen("HomeScreen","Navigate to home screen",{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              })
+trackScreen("HomeScreen","Navigate to home screen",[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+])
 
 ```
 
@@ -147,18 +141,12 @@ trackEvent("test category","test action"," test name",2);
 
 ```js
 
-trackEvent("test category","test action"," test name",2,{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              });
+trackEvent("test category","test action"," test name",2,[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+])
 
 ```
 
@@ -188,18 +176,12 @@ size: 'L',
 }),
 '',
 0,
-{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              }
+[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+]
 );
 
 ```
@@ -220,18 +202,12 @@ trackOutlink("https://www.google.com/")
 
 ```js
 
-trackOutlink("https://www.google.com/",{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              })
+trackOutlink("https://www.google.com/",[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+])
 
 ```
 
@@ -251,18 +227,12 @@ trackImpression("Logicwind")
 
 ```js
 
-trackImpression("Logicwind",{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              })
+trackImpression("Logicwind",[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+])
 
 ```
 
@@ -282,18 +252,12 @@ trackImpression("Test Track Impression")
 
 ```js
 
-trackImpression("Test Track Impression",{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              })
+trackImpression("Test Track Impression",[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+])
 
 ```
 
@@ -313,18 +277,12 @@ trackInteraction("Test Track interaction","test inetraction")
 
 ```js
 
-trackInteraction("Test Track interaction","test inetraction",{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              })
+trackInteraction("Test Track interaction","test inetraction",[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+])
 
 ```
 
@@ -344,18 +302,12 @@ trackDownload("Download","PDF Download","https://example.com/download.pdf")
 
 ```js
 
-trackDownload("Download","PDF Download","https://example.com/download.pdf",{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              })
+trackDownload("Download","PDF Download","https://example.com/download.pdf",[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+])
 
 ```
 
@@ -458,18 +410,12 @@ trackMediaEvent function use to monitor user interactions with media content, su
 
 ```js
 
-trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100", dimensions:{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              }});
+trackMediaEvent({siteId:"siteid",mediaId:"unique id",mediaTitle:"video media play track",playerName:"test 08",mediaType:MediaType.VIDEO,mediaResource:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",mediaStatus:"100",mediaLength:"100",mediaFullScreen:"1",mediaHeight:"720",mediaWidth:"1080",mediaProgress:"100", dimensions:[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+]});
 
 ```
 
@@ -529,18 +475,12 @@ trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo
 
 ```js
 
-trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo&mtm_source=google&mtm_medium=email&mtm_keyword=august promo&mtm_content=primary-cta",{
-              "dimension":{
-                "action":[
-                  {"1":"visit dimension 1"},
-                  {"2":"visit dimension 2"}
-                ],
-                "visit":[
-                  {"4":"action dimension 1"},
-                  {"5":"action dimension 2"}
-                ]
-               }
-              })
+trackCampaign("Home screen","https://example.com/?mtm_campaign=2020_august_promo&mtm_source=google&mtm_medium=email&mtm_keyword=august promo&mtm_content=primary-cta",[
+{ key: "1",value:"visit dimension 1" },
+{ key:"2",value:"visit dimension 2" },
+{ key:"3",value:"action dimension 3" },
+{ key:"4",value:"action dimension 4" },
+])
 
 ```
 
@@ -555,7 +495,12 @@ Dimension contains a key and a value, and where the key is a custom dimension id
 ```js
 
 trackCustomDimension({
-  dimensions:[{key:"1",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"},{key:"2",value: "cf7fad2e-fae4-4c49-9924-ad9a2a7c50de"}]
+  dimensions:[
+  { key: "1",value:"visit dimension 1" },
+  { key:"2",value:"visit dimension 2" },
+  { key:"3",value:"action dimension 3" },
+  { key:"4",value:"action dimension 4" },
+  ]
 });
 
 ```
@@ -589,17 +534,7 @@ trackCustomDimension({
 ## Dimension Object Property 
 
 ```js
-Dimension :  {
-      "dimension":{
-          "action":[
-              {"id":String}
-          ],
-          "visit":[
-             {"id":String}
-          ]
-      }
-}
-
+Dimension : [{ key: string,value:string}]
 ```
 
 <!-- ## Contributing
