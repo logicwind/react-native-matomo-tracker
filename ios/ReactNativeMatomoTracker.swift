@@ -48,9 +48,10 @@ class ReactNativeMatomoTracker: NSObject {
      }
 
     
-   @objc(trackScreen:withTitle:)
-   func trackScreen(screenName: String, title: String) {
-       matomoTracker?.track(view: [screenName,title])
+    @objc(trackScreen:withTitle:withActionDimensions:)
+    func trackScreen(screenName: String, title: String,actionDimensions:[NSDictionary]) {
+      let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+       matomoTracker?.track(view: [screenName,title],dimensions:dimensions)
     }
 
     @objc(trackDispatch)
@@ -58,41 +59,49 @@ class ReactNativeMatomoTracker: NSObject {
           matomoTracker?.dispatch()
     }
     
-    @objc(trackEvent:withAction:withName:withValue:)
-    func trackEvent(category:String,action:String,name:String,value:Float) {
-        matomoTracker?.track(eventWithCategory:category, action:action,name: name,value:value)
+    @objc(trackEvent:withAction:withName:withValue:withActionDimensions:)
+    func trackEvent(category:String,action:String,name:String,value:Float,actionDimensions:[NSDictionary]) {
+        let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+        matomoTracker?.track(eventWithCategory:category, action:action,name: name,value:value,dimensions:dimensions)
     }
     
-    @objc(trackOutlink:)
-    func trackOutlink(url:String) {
+    @objc(trackOutlink:withActionDimensions:)
+    func trackOutlink(url:String,actionDimensions:[NSDictionary]) {
         if(matomoTracker != nil){
+            let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+            setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
             let event = Event(tracker: matomoTracker!, action: ["link"],customTrackingParameters: ["link" : url],isCustomAction: true)
-                 matomoTracker?.track(event)
+            matomoTracker?.track(event)
         }
     }
     
-    @objc(trackSearch:)
-    func trackSearch(keyword:String) {
-        matomoTracker?.trackSearch(query:keyword,category: "",resultCount: 0)
+    @objc(trackSearch:withActionDimensions:)
+    func trackSearch(keyword:String,actionDimensions:[NSDictionary]) {
+         let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+        setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
+        matomoTracker?.trackSearch(query:keyword,category: "",resultCount: 0,dimensions: dimensions)
     }
     
 
-    @objc(trackImpression:)
-    func trackImpression(contentName:String) {
+    @objc(trackImpression:withActionDimensions:)
+    func trackImpression(contentName:String,actionDimensions:[NSDictionary]) {
+        let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+        setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
         matomoTracker?.trackContentImpression(name: contentName, piece:"", target:"")
     }
     
-    @objc(trackInteraction:withContentInteraction:)
-    func trackInteraction(contentName:String,contentInteraction:String) {
+    @objc(trackInteraction:withContentInteraction:withActionDimensions:)
+    func trackInteraction(contentName:String,contentInteraction:String,actionDimensions:[NSDictionary]) {
         matomoTracker?.trackContentInteraction(name:contentName, interaction:contentInteraction,piece: "",target: "")
     }
     
-    @objc(trackDownload:withAction:withUrl:)
-    func trackDownload(category:String,action:String,url:String) {
+    @objc(trackDownload:withAction:withUrl:withActionDimensions:)
+    func trackDownload(category:String,action:String,url:String,actionDimensions:[NSDictionary]) {
         if(matomoTracker != nil){
+            let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+            setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
             let event = Event(tracker: matomoTracker!, action: ["download"],customTrackingParameters: ["download" : url],isCustomAction: true)
             matomoTracker?.track(event)
-            
         }
     }
     
@@ -106,8 +115,10 @@ class ReactNativeMatomoTracker: NSObject {
       
     }
     
-    @objc(trackGoal:withRevenue:)
-    func trackGoal(goalId:Int,revenue:Float) {
+    @objc(trackGoal:withRevenue:withActionDimensions:)
+    func trackGoal(goalId:Int,revenue:Float,actionDimensions:[NSDictionary]) {
+        let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+        setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
         matomoTracker?.trackGoal(id: goalId, revenue: revenue)
     }
     
@@ -133,9 +144,9 @@ class ReactNativeMatomoTracker: NSObject {
 
     }
     
-    @objc(trackCampaign:withCampaignUrl:)
-    func trackCampaign(title:String,campaignUrl:String) {
-        
+    @objc(trackCampaign:withCampaignUrl:withActionDimensions:)
+    func trackCampaign(title:String,campaignUrl:String,actionDimensions:[NSDictionary]) {
+
         if let campaignUrl = URL(string: campaignUrl) {
             if let components = URLComponents(url: campaignUrl, resolvingAgainstBaseURL: false),
                let queryItems = components.queryItems {
@@ -145,15 +156,13 @@ class ReactNativeMatomoTracker: NSObject {
                         campaignParameters[queryItem.name] = value
                     }
                 }
-            
-                matomoTracker?.track(view: ["campaign"], url: campaignUrl)
+                let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+                matomoTracker?.track(view: ["campaign"], url: campaignUrl,dimensions:dimensions)
                 matomoTracker?.dispatch()
             }
-            
         } else {
-                  print("Invalid URL string")
+           print("Invalid URL string")
         }
-    
     }
   
     
@@ -176,7 +185,7 @@ class ReactNativeMatomoTracker: NSObject {
         }
     }
     
-    @objc(trackMedia:withMediaId:withMediaTitle:withPlayerName:withMediaType:withMediaResource:withMediaStatus:withMediaLength:withMediaProgress:withMediaTTP:withMediaWidth:withMediaHeight:withMediaSE:withMediaFullScreen:withDimensions:)
+    @objc(trackMedia:withMediaId:withMediaTitle:withPlayerName:withMediaType:withMediaResource:withMediaStatus:withMediaLength:withMediaProgress:withMediaTTP:withMediaWidth:withMediaHeight:withMediaSE:withMediaFullScreen:withActionDimensions:)
     func trackMediaEvent(
         siteId: String,
         mediaId: String,
@@ -192,7 +201,7 @@ class ReactNativeMatomoTracker: NSObject {
         mediaHeight: String,
         mediaSE: String,
         mediaFullScreen:String,
-        dimensions:[NSDictionary]
+        actionDimensions:[NSDictionary]
     ) {
         if(!siteId.isEmpty && matomoTracker != nil)
         {
@@ -209,7 +218,8 @@ class ReactNativeMatomoTracker: NSObject {
             } else {
                 uid = ""
             }
-            
+        
+
             let baseUrl = baseURL
             var query = "idsite=\(encodeParameter(value: siteId))" +
                         "&rec=1" +
@@ -219,32 +229,22 @@ class ReactNativeMatomoTracker: NSObject {
                         "&ma_pn=\(encodeParameter(value: playerName))" +
                         "&ma_mt=\(encodeParameter(value: mediaType))" +
                         "&ma_re=\(encodeParameter(value: mediaResource))" +
-                        "&ma_st=\(encodeParameter(value: mediaStatus))" +
-                        "&cid=\(encodeParameter(value: _id))" +
-                        "&uid=\(encodeParameter(value: uid))"
-            
-            if(!dimensions.isEmpty){
-              
-              for dimension in dimensions {
-                if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
-                    if let id = Int(key) {
-                        matomoTracker?.setDimension(value, forIndex: id)
-                        matomoTracker?.dispatch()
-                    } else {
-                        print("Key could not be converted to an Int")
-                    }
-                }
-              }
-            }
+                        "&ma_st=\(encodeParameter(value: mediaStatus))"
+                       
+            if(!actionDimensions.isEmpty){
+                          for dimension in actionDimensions {
+                            if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
+                                let intKey = Int(key) ?? 0
+                                query=query+"&dimension\(intKey)=\(encodeParameter(value: value))";
+                            }
+                          }
+                        }
         
             
-//            if(!customVariable.isEmpty){
-//             
-//                let encodedCustomVariable = encodeParameter(value: customVariable)
-//                print("customVariable \(encodedCustomVariable)")
-//                query=query+"&_cvar=\(encodedCustomVariable)";
-//            }
-//            
+            query=query+"&cid=\(encodeParameter(value: _id))" +
+            "&uid=\(encodeParameter(value: uid))"
+
+     
             if(!mediaLength.isEmpty){
                 query=query+"&ma_le=\(encodeParameter(value: mediaLength))";
             }
@@ -313,3 +313,26 @@ class ReactNativeMatomoTracker: NSObject {
    }
 }
 
+func trackActionCustomDimension(dimensions: [NSDictionary]) -> [CustomDimension] {
+  
+    var actionCustomDimension: [CustomDimension]  = []
+    if(!dimensions.isEmpty){
+        for dimension in dimensions {
+        if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
+            let intKey = Int(key) ?? 0
+                actionCustomDimension.append(CustomDimension(index: intKey, value: value))
+            }
+        }
+    }
+    
+    return actionCustomDimension
+}
+
+func setActionCustomDimension(dimensions: [CustomDimension],matomoTracker: MatomoTracker?){
+   
+    if(!dimensions.isEmpty){
+        for dimension in dimensions {
+            matomoTracker?.set(dimension:dimension )
+        }
+    }
+}
