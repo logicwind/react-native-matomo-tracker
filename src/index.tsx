@@ -83,7 +83,7 @@ export function trackCampaign(title:String,campaignUrl:String,actionDimensions?:
 }
 
 export function trackMediaEvent(
-{siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength="",mediaProgress="",mediaTTP="",mediaWidth="",mediaHeight="",mediaSE="",mediaFullScreen="",dimension}:{  
+{siteId,mediaId,mediaTitle,playerName,mediaType,mediaResource,mediaStatus,mediaLength="",mediaProgress="",mediaTTP="",mediaWidth="",mediaHeight="",mediaSE="",mediaFullScreen="",dimension=[]}:{  
   siteId: String,
   mediaId: String,
   mediaTitle: String,
