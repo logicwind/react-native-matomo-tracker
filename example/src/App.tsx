@@ -86,7 +86,7 @@ export default function App() {
           <Pressable
             style={styles.button}
             onPress={() => {
-              trackEvent('test category', 'test action', ' test name', 2, [
+              trackEvent('test category', 'test action', ' test name', 2,[
                 {  key: "1",value:"visit dimension 1"},
                   {  key:"2",value:"visit dimension 2"},
                 {    key:"3",value:"action dimension 3"},

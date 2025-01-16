@@ -275,7 +275,7 @@ class ReactNativeMatomoTracker: NSObject {
             
           
             let urlString = "\(baseUrl)?\(query)"
-
+            
             if let url = URL(string: urlString) {
                     var request = URLRequest(url: url)
                    let device = Device.makeCurrentDevice();
@@ -285,9 +285,9 @@ class ReactNativeMatomoTracker: NSObject {
                     request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
                     request.setValue("\(authToken)", forHTTPHeaderField: "token_auth")
                     let task = URLSession.shared.dataTask(with:  request) { data, response, error in
-                    if let httpResponse = response as? HTTPURLResponse {
-                        let statusCode = httpResponse.statusCode
-                    }
+                        if let httpResponse = response as? HTTPURLResponse {
+                            let statusCode = httpResponse.statusCode
+                        }
                 }
                 task.resume()
             }

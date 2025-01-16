@@ -22,11 +22,11 @@ export function createTracker(uri: String="", siteId: Number=0,token:String="") 
 }
 
 export function trackScreen(screenName: String, title: String,actionDimensions?:Array<Object>) {
-  return ReactNativeMatomoTracker.trackScreen(screenName, title,actionDimensions??[]);
+  return ReactNativeMatomoTracker.trackScreen(screenName, title,actionDimensions);
 }
 
 export function trackEvent(category:String,action:String,name:String="",value:Number=0,actionDimensions?:Array<Object>) {
-  return ReactNativeMatomoTracker.trackEvent(category,action,name,value,actionDimensions??[]);
+  return ReactNativeMatomoTracker.trackEvent(category,action,name,value,actionDimensions);
 }
 
 export function trackDispatch(){
@@ -34,23 +34,23 @@ export function trackDispatch(){
 }
 
 export function trackOutlink(url:String,actionDimensions?:Array<Object>) {
-  return ReactNativeMatomoTracker.trackOutlink(url,actionDimensions??[]);
+  return ReactNativeMatomoTracker.trackOutlink(url,actionDimensions);
 }
 
 export function trackSearch(keyword:String,actionDimensions?:Array<Object>) {
-  return ReactNativeMatomoTracker.trackSearch(keyword,actionDimensions??[]);
+  return ReactNativeMatomoTracker.trackSearch(keyword,actionDimensions);
 }
 
 export function trackImpression(contentName:String,actionDimensions?:Array<Object>){
-  return ReactNativeMatomoTracker.trackImpression(contentName,actionDimensions??[]);
+  return ReactNativeMatomoTracker.trackImpression(contentName,actionDimensions);
 }
 
 export function trackInteraction(contentName:String,contentInteraction:String,actionDimensions?:Array<Object>) {
-  return ReactNativeMatomoTracker.trackInteraction(contentName,contentInteraction,actionDimensions??[]);
+  return ReactNativeMatomoTracker.trackInteraction(contentName,contentInteraction,actionDimensions);
 }
 
 export function trackDownload(category:String,action:String,url:String,actionDimensions?:Array<Object>){
-  return ReactNativeMatomoTracker.trackDownload(category,action,url,actionDimensions??[]);
+  return ReactNativeMatomoTracker.trackDownload(category,action,url,actionDimensions);
 }
 
 export function setUserId(id:String) {
@@ -79,7 +79,7 @@ export function startSession() {
 }
 
 export function trackCampaign(title:String,campaignUrl:String,actionDimensions?:Array<Object>) {
-  return ReactNativeMatomoTracker.trackCampaign(title,campaignUrl,actionDimensions??{});
+  return ReactNativeMatomoTracker.trackCampaign(title,campaignUrl,actionDimensions);
 }
 
 export function trackMediaEvent(
@@ -105,7 +105,7 @@ export function trackMediaEvent(
 }
 
 export function trackCustomDimension(
-  {dimensions=[]}:{  
+  {dimensions}:{  
     dimensions?: Array<Object>
   }): Promise<number> {
     return ReactNativeMatomoTracker.trackCustomDimension(dimensions);
