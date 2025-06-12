@@ -505,6 +505,34 @@ trackCustomDimension({
 
 ```
 
+### trackGoal()
+
+With trackGoal, you can track when a visitor completes a specific objective on your website, such as signing up for a newsletter, completing a purchase, or clicking a call-to-action. Each goal is defined in the Matomo dashboard with a unique Goal ID, and can optionally include a revenue value to track the monetary impact of conversions.
+
+Using trackGoal, you can measure how many users convert on a specific goal, analyze conversion rates, and understand which pages, campaigns, or referrers are driving those conversions.
+
+A goal can be triggered with a simple call by passing the required Goal ID, and optionally a revenue amount. Make sure your goal is configured in the Matomo Goals settings before tracking. Learn more about [how to set up goals in Matomo.](https://matomo.org/faq/reports/create-a-goal-in-matomo/)
+
+* Goal Id (Recommended): `goalId`
+<br>The unique ID of the goal you defined in the Matomo dashboard.</br>
+
+* Revenue (Optional): `revenue`
+<br>The monetary value associated with the goal conversion (e.g., purchase amount)</br>
+
+#### Example
+
+```js
+
+trackGoal(
+  2, // goalId
+  49.99, // revenue
+  [
+      { key: "1", value: "CheckoutSuccess" }
+  ]
+);
+
+```
+
 
 
 ## Methods
@@ -573,7 +601,7 @@ Click on “Create new token”
 
 
 ## react-native-matomo-tracker is crafted mindfully at [Logicwind](https://www.logicwind.com?utm_source=github&utm_medium=github.com-logicwind&utm_campaign=react-native-matomo-tracker)
-We are a 130+ people company developing and designing multiplatform applications using the Lean & Agile methodology. To get more information on the solutions that would suit your needs, feel free to get in touch by [email](mailto:sales@logicwind.com) or through or [contact form](https://www.logicwind.com/book-call?utm_source=github&utm_medium=github.com-logicwind&utm_campaign=react-native-matomo-tracker)!
+We are a 130+ people company developing and designing multiplatform applications using the Lean & Agile methodology. To get more information on the solutions that would suit your needs, feel free to get in touch by [email](mailto:sales@logicwind.com) or through or [contact form](https://www.logicwind.com/contact-us?utm_source=github&utm_medium=github.com-logicwind&utm_campaign=react-native-matomo-tracker)!
 
 We will always answer you with pleasure 😁
 

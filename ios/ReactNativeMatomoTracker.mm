@@ -25,11 +25,11 @@ RCT_EXTERN_METHOD(setUserId:(NSString *)id)
 
 RCT_EXTERN_METHOD(trackScreens)
 
-RCT_EXTERN_METHOD(trackGoal:(NSInteger)goalId withRevenue:(float *)revenue)
+RCT_EXTERN_METHOD(trackGoal:(NSInteger)goalId withRevenue:(NSNumber *)revenue withActionDimensions:(NSArray<NSDictionary *> *)actionDimensions)
 
 RCT_EXTERN_METHOD(setVisitorId:(NSString *)id)
 
-RCT_EXTERN_METHOD(setIsOptedOut:(BOOL)isOptedOut)
+// RCT_EXTERN_METHOD(setIsOptedOut:(BOOL)isOptedOut) 
 
 RCT_EXTERN_METHOD(setLogger)
 

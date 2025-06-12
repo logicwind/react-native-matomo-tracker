@@ -9,179 +9,262 @@ class ReactNativeMatomoTracker: NSObject {
     var site_id = "";
     var authToken = "";
     var _id = "";
+    enum Logger {
+        static func debug(_ message: @autoclosure () -> Any) {
+            #if DEBUG
+            print("ℹ️ [MATOMO][DEBUG] \(message())")
+            #endif
+        }
+
+        static func error(_ message: @autoclosure () -> Any) {
+            #if DEBUG
+            print("❌ [MATOMO][ERROR] \(message())")
+            #endif
+        }
+
+        static func info(_ message: @autoclosure () -> Any) {
+            #if DEBUG
+            print("ℹ️ [MATOMO][INFO] \(message())")
+            #endif
+        }
+    }
     override init() {
-            super.init()
+        super.init()
        
             // Initialize matomoTracker here or in createTracker method
         _id = newVisitorID()
         matomoTracker?.forcedVisitorId = _id;
-       
+        Logger.debug("ReactNativeMatomoTracker init: Generated visitor ID = \(_id)")
     }
   
     @objc(createTracker:withSiteId:withToken:)
-    func createTracker(uri:String,siteId:String,token:String) {
-            authToken = token
+    func createTracker(uri: String, siteId: String, token: String) {
+        Logger.debug("=== createTracker START ===")
+        Logger.debug("URI: '\(uri)'")
+        Logger.debug("SiteId: '\(siteId)'")
+        Logger.debug("Token: '\(token)'")
+        
+        // Basic validation
+        guard !uri.isEmpty else {
+            Logger.error("ERROR: URI is empty")
+            return
+        }
+        
+        guard !siteId.isEmpty else {
+            Logger.error("ERROR: SiteId is empty")
+            return
+        }
+        
+        // Store values
+        authToken = token
+        baseURL = uri
+        site_id = siteId
+        
+        do {
+            Logger.debug("Creating UserDefaultsQueue...")
             let queue = UserDefaultsQueue(UserDefaults.standard, autoSave: true)
+            Logger.debug("UserDefaultsQueue created successfully")
             
-             baseURL =  uri
-             site_id = siteId
-            if(baseURL.isEmpty && siteId.isEmpty){
-                print("createTracker : baseURL and siteId is empty or undefined")
+            Logger.debug("Creating URL from: '\(baseURL)'")
+            guard let url = URL(string: baseURL) else {
+                Logger.error("ERROR: Invalid URL")
+                return
             }
-            else if(baseURL.isEmpty){
-                print("createTracker : baseURL is empty or undefined")
-            }
-            else if(siteId.isEmpty){
-                print("createTracker : siteId is empty or undefined")
-            }
-            else if(!baseURL.isEmpty && !siteId.isEmpty){
-                let dispatcher = URLSessionDispatcher(baseURL: URL(string:baseURL)!)
-                matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
-                matomoTracker?.userId = _id;
-            }
+            Logger.debug("URL created successfully")
+            
+            Logger.debug("Creating URLSessionDispatcher...")
+            let dispatcher = URLSessionDispatcher(baseURL: url)
+            Logger.debug("URLSessionDispatcher created successfully")
+            
+            Logger.debug("Creating MatomoTracker...")
+            matomoTracker = MatomoTracker(siteId: siteId, queue: queue, dispatcher: dispatcher)
+            Logger.info("MatomoTracker created successfully")
+            
+            Logger.debug("Setting visitor ID...")
+            matomoTracker?.forcedVisitorId = _id
+            matomoTracker?.userId = _id
+            Logger.debug("Visitor ID set successfully")
+            
+            Logger.info("=== createTracker SUCCESS ===")
+        } catch {
+            Logger.error("ERROR in createTracker: \(error)")
+        }
     }
-    
     
     @objc(startSession)
     func startSession() {
+        Logger.info("startSession called")
         matomoTracker?.startNewSession()
-     }
+    }
 
-    
     @objc(trackScreen:withTitle:withActionDimensions:)
-    func trackScreen(screenName: String, title: String,actionDimensions:[NSDictionary]) {
-      let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
-       matomoTracker?.track(view: [screenName,title],dimensions:dimensions)
+    func trackScreen(screenName: String, title: String, actionDimensions: [NSDictionary]) {
+        Logger.debug("trackScreen called: \(screenName)")
+        guard let tracker = matomoTracker else {
+            Logger.error("ERROR: matomoTracker is nil")
+            return
+        }
+        let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+        tracker.track(view: [screenName, title], dimensions: dimensions)
     }
 
     @objc(trackDispatch)
     func trackDispatch() {
-          matomoTracker?.dispatch()
+        Logger.debug("trackDispatch called")
+        matomoTracker?.dispatch()
     }
     
     @objc(trackEvent:withAction:withName:withValue:withActionDimensions:)
-    func trackEvent(category:String,action:String,name:String,value:Float,actionDimensions:[NSDictionary]) {
+    func trackEvent(category:String,action:String,name:String,value:NSNumber,actionDimensions:[NSDictionary]) {
+        Logger.debug("trackEvent called: \(category)/\(action)")
+        guard let tracker = matomoTracker else {
+            Logger.error("ERROR: matomoTracker is nil")
+            return
+        }
         let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
-        matomoTracker?.track(eventWithCategory:category, action:action,name: name,value:value,dimensions:dimensions)
+        tracker.track(eventWithCategory:category, action:action,name: name,value:value.floatValue,dimensions:dimensions)
     }
     
     @objc(trackOutlink:withActionDimensions:)
-    func trackOutlink(url:String,actionDimensions:[NSDictionary]) {
-        if(matomoTracker != nil){
-            let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
-            setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
-            let event = Event(tracker: matomoTracker!, action: ["link"],customTrackingParameters: ["link" : url],isCustomAction: true)
-            matomoTracker?.track(event)
+    func trackOutlink(url: String, actionDimensions: [NSDictionary]) {
+        Logger.debug("trackOutlink called: \(url)")
+        guard let tracker = matomoTracker else {
+            Logger.error("ERROR: matomoTracker is nil")
+            return
         }
+        let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+        setActionCustomDimension(dimensions: dimensions, matomoTracker: tracker)
+        let event = Event(tracker: tracker, action: ["link"], customTrackingParameters: ["link": url], isCustomAction: true)
+        tracker.track(event)
     }
     
     @objc(trackSearch:withActionDimensions:)
-    func trackSearch(keyword:String,actionDimensions:[NSDictionary]) {
-         let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
-        setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
-        matomoTracker?.trackSearch(query:keyword,category: "",resultCount: 0,dimensions: dimensions)
+    func trackSearch(keyword: String, actionDimensions: [NSDictionary]) {
+        Logger.debug("trackSearch called: \(keyword)")
+        guard let tracker = matomoTracker else {
+            Logger.error("ERROR: matomoTracker is nil")
+            return
+        }
+        let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+        setActionCustomDimension(dimensions: dimensions, matomoTracker: tracker)
+        tracker.trackSearch(query: keyword, category: "", resultCount: 0, dimensions: dimensions)
     }
     
-
     @objc(trackImpression:withActionDimensions:)
-    func trackImpression(contentName:String,actionDimensions:[NSDictionary]) {
+    func trackImpression(contentName: String, actionDimensions: [NSDictionary]) {
+        Logger.debug("trackImpression called: \(contentName)")
+        guard let tracker = matomoTracker else {
+            Logger.error("ERROR: matomoTracker is nil")
+            return
+        }
         let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
-        setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
-        matomoTracker?.trackContentImpression(name: contentName, piece:"", target:"")
+        setActionCustomDimension(dimensions: dimensions, matomoTracker: tracker)
+        tracker.trackContentImpression(name: contentName, piece: "", target: "")
     }
     
     @objc(trackInteraction:withContentInteraction:withActionDimensions:)
-    func trackInteraction(contentName:String,contentInteraction:String,actionDimensions:[NSDictionary]) {
-        matomoTracker?.trackContentInteraction(name:contentName, interaction:contentInteraction,piece: "",target: "")
+    func trackInteraction(contentName: String, contentInteraction: String, actionDimensions: [NSDictionary]) {
+        Logger.debug("trackInteraction called: \(contentName)")
+        matomoTracker?.trackContentInteraction(name: contentName, interaction: contentInteraction, piece: "", target: "")
     }
     
     @objc(trackDownload:withAction:withUrl:withActionDimensions:)
-    func trackDownload(category:String,action:String,url:String,actionDimensions:[NSDictionary]) {
-        if(matomoTracker != nil){
-            let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
-            setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
-            let event = Event(tracker: matomoTracker!, action: ["download"],customTrackingParameters: ["download" : url],isCustomAction: true)
-            matomoTracker?.track(event)
+    func trackDownload(category: String, action: String, url: String, actionDimensions: [NSDictionary]) {
+        Logger.debug("trackDownload called: \(url)")
+        guard let tracker = matomoTracker else {
+            Logger.error("ERROR: matomoTracker is nil")
+            return
         }
+        let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+        setActionCustomDimension(dimensions: dimensions, matomoTracker: tracker)
+        let event = Event(tracker: tracker, action: ["download"], customTrackingParameters: ["download": url], isCustomAction: true)
+        tracker.track(event)
     }
     
     @objc(setUserId:)
-    func setUserId(id:String) {
-        matomoTracker?.userId=id
+    func setUserId(id: String) {
+        Logger.debug("setUserId called: \(id)")
+        matomoTracker?.userId = id
     }
     
     @objc(trackScreens)
     func trackScreens() {
-      
+        Logger.debug("trackScreens called")
     }
     
     @objc(trackGoal:withRevenue:withActionDimensions:)
-    func trackGoal(goalId:Int,revenue:Float,actionDimensions:[NSDictionary]) {
+    func trackGoal(goalId: Int, revenue: NSNumber, actionDimensions: [NSDictionary]) {
+        Logger.debug("trackGoal called: \(goalId)")
+        guard let tracker = matomoTracker else {
+            Logger.error("ERROR: matomoTracker is nil")
+            return
+        }
         let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
-        setActionCustomDimension(dimensions: dimensions, matomoTracker: matomoTracker)
-        matomoTracker?.trackGoal(id: goalId, revenue: revenue)
+        setActionCustomDimension(dimensions: dimensions, matomoTracker: tracker)
+        tracker.trackGoal(id: goalId, revenue: revenue.floatValue)
     }
     
     @objc(setVisitorId:)
-    func setVisitorId(id:String) {
-        matomoTracker?.forcedVisitorId=id
-        _id=id
+    func setVisitorId(id: String) {
+        Logger.debug("setVisitorId called: \(id)")
+        matomoTracker?.forcedVisitorId = id
+        _id = id
     }
     
     @objc(disableTracking)
     func disableTracking() {
-        matomoTracker?.isOptedOut = true;
+        Logger.debug("disableTracking called")
+        matomoTracker?.isOptedOut = true
     }
     
     @objc(enableTracking)
     func enableTracking() {
-        matomoTracker?.isOptedOut = false;
+        Logger.debug("enableTracking called")
+        matomoTracker?.isOptedOut = false
     }
     
     @objc(setLogger)
     func setLogger() {
+        Logger.debug("setLogger called")
         matomoTracker?.logger = DefaultLogger(minLevel: .verbose)
-
     }
     
     @objc(trackCampaign:withCampaignUrl:withActionDimensions:)
-    func trackCampaign(title:String,campaignUrl:String,actionDimensions:[NSDictionary]) {
-
-        if let campaignUrl = URL(string: campaignUrl) {
-            if let components = URLComponents(url: campaignUrl, resolvingAgainstBaseURL: false),
-               let queryItems = components.queryItems {
-                var campaignParameters = [String: String]()
-                for queryItem in queryItems {
-                    if let value = queryItem.value {
-                        campaignParameters[queryItem.name] = value
-                    }
-                }
-                let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
-                matomoTracker?.track(view: ["campaign"], url: campaignUrl,dimensions:dimensions)
-                matomoTracker?.dispatch()
-            }
-        } else {
-           print("Invalid URL string")
+    func trackCampaign(title: String, campaignUrl: String, actionDimensions: [NSDictionary]) {
+        Logger.debug("trackCampaign called: \(title)")
+        guard let campaignURL = URL(string: campaignUrl),
+              let components = URLComponents(url: campaignURL, resolvingAgainstBaseURL: false),
+              let queryItems = components.queryItems else {
+            Logger.error("ERROR: Invalid campaign URL")
+            return
         }
+        
+        var campaignParameters = [String: String]()
+        for queryItem in queryItems {
+            if let value = queryItem.value {
+                campaignParameters[queryItem.name] = value
+            }
+        }
+        let dimensions: [CustomDimension] = trackActionCustomDimension(dimensions: actionDimensions)
+        matomoTracker?.track(view: ["campaign"], url: campaignURL, dimensions: dimensions)
+        matomoTracker?.dispatch()
     }
-  
     
     @objc(trackCustomDimension:)
-    func trackCustomDimension(
-        dimensions:[NSDictionary]
-    ) {
-        if(!dimensions.isEmpty){
-            matomoTracker?.track(view: ["customDimension"])
-          for dimension in dimensions {
-            if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
-                if let id = Int(key) {
-                    matomoTracker?.setDimension(value, forIndex: id)
-                    matomoTracker?.dispatch()
-                } else {
-                    print("Key could not be converted to an Int")
-                }
+    func trackCustomDimension(dimensions: [NSDictionary]) {
+        Logger.debug("trackCustomDimension called")
+        guard !dimensions.isEmpty else { return }
+        
+        matomoTracker?.track(view: ["customDimension"])
+        for dimension in dimensions {
+            if let key = dimension["key"] as? String,
+               let value = dimension["value"] as? String,
+               let id = Int(key) {
+                matomoTracker?.setDimension(value, forIndex: id)
+                matomoTracker?.dispatch()
+            } else {
+                Logger.error("Error: Key could not be converted to an Int")
             }
-          }
         }
     }
     
@@ -203,24 +286,28 @@ class ReactNativeMatomoTracker: NSObject {
         mediaFullScreen:String,
         actionDimensions:[NSDictionary]
     ) {
-        if(!siteId.isEmpty && matomoTracker != nil)
-        {
-            if(mediaStatus=="0"){
-                matomoTracker?.track(eventWithCategory:mediaType, action:"play",name: mediaTitle)
-            }
-            if(mediaStatus==mediaLength){
-                matomoTracker?.track(eventWithCategory:mediaType, action:"stop",name: mediaTitle)
-            }
-    
-            var uid =  ""
-            if var userId = matomoTracker?.userId {
-                uid = userId
-            } else {
-                uid = ""
-            }
+        Logger.debug("trackMediaEvent called: \(mediaTitle)")
+        // Simplified implementation for now
+        guard !siteId.isEmpty, let tracker = matomoTracker else {
+            Logger.error("ERROR: Invalid siteId or matomoTracker is nil")
+            return
+        }
         
-
-            let baseUrl = baseURL
+        if mediaStatus == "0" {
+            tracker.track(eventWithCategory: mediaType, action: "play", name: mediaTitle)
+        }
+        if mediaStatus == mediaLength {
+            tracker.track(eventWithCategory: mediaType, action: "stop", name: mediaTitle)
+        }
+        var uid =  ""
+        if var userId = matomoTracker?.userId {
+            uid = userId
+        } else {
+            uid = ""
+        }
+        
+        
+        let baseUrl = baseURL
             var query = "idsite=\(encodeParameter(value: siteId))" +
                         "&rec=1" +
                         "&r=\(generateRandomNumber())" +
@@ -230,8 +317,8 @@ class ReactNativeMatomoTracker: NSObject {
                         "&ma_mt=\(encodeParameter(value: mediaType))" +
                         "&ma_re=\(encodeParameter(value: mediaResource))" +
                         "&ma_st=\(encodeParameter(value: mediaStatus))"
-                       
-            if(!actionDimensions.isEmpty){
+        
+        if(!actionDimensions.isEmpty){
                           for dimension in actionDimensions {
                             if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
                                 let intKey = Int(key) ?? 0
@@ -244,8 +331,8 @@ class ReactNativeMatomoTracker: NSObject {
             query=query+"&cid=\(encodeParameter(value: _id))" +
             "&uid=\(encodeParameter(value: uid))"
 
-     
-            if(!mediaLength.isEmpty){
+
+        if(!mediaLength.isEmpty){
                 query=query+"&ma_le=\(encodeParameter(value: mediaLength))";
             }
             
@@ -272,8 +359,8 @@ class ReactNativeMatomoTracker: NSObject {
             if(!mediaTTP.isEmpty){
                 query=query+"&ma_ttp=\(encodeParameter(value: mediaTTP))";
             }
-            
-          
+
+
             let urlString = "\(baseUrl)?\(query)"
             
             if let url = URL(string: urlString) {
@@ -290,49 +377,45 @@ class ReactNativeMatomoTracker: NSObject {
                         }
                 }
                 task.resume()
-            }
-            matomoTracker?.dispatch()
-        }
+            }    
+        tracker.dispatch()
     }
-    
-    private func generateRandomNumber() -> UInt64 {
+
+     private func generateRandomNumber() -> UInt64 {
            return UInt64(arc4random_uniform(UInt32.max))
        }
 
     private func encodeParameter(value: String) -> String {
           return value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
       }
-
     
+
     func newVisitorID() -> String {
-       let uuid = UUID().uuidString
-       let sanitizedUUID = uuid.replacingOccurrences(of: "-", with: "")
-       let start = sanitizedUUID.startIndex
-       let end = sanitizedUUID.index(start, offsetBy: 16)
-       return String(sanitizedUUID[start..<end])
-   }
+        let uuid = UUID().uuidString
+        let sanitizedUUID = uuid.replacingOccurrences(of: "-", with: "")
+        let start = sanitizedUUID.startIndex
+        let end = sanitizedUUID.index(start, offsetBy: 16)
+        return String(sanitizedUUID[start..<end])
+    }
 }
 
 func trackActionCustomDimension(dimensions: [NSDictionary]) -> [CustomDimension] {
-  
-    var actionCustomDimension: [CustomDimension]  = []
-    if(!dimensions.isEmpty){
-        for dimension in dimensions {
-        if let key = dimension["key"] as? String, let value = dimension["value"] as? String {
-            let intKey = Int(key) ?? 0
-                actionCustomDimension.append(CustomDimension(index: intKey, value: value))
-            }
+
+    var actionCustomDimension: [CustomDimension] = []
+
+    for dimension in dimensions {
+        if let key = dimension["key"] as? String,
+           let value = dimension["value"] as? String,
+           let intKey = Int(key) {
+            actionCustomDimension.append(CustomDimension(index: intKey, value: value))
         }
     }
-    
     return actionCustomDimension
 }
 
-func setActionCustomDimension(dimensions: [CustomDimension],matomoTracker: MatomoTracker?){
-   
-    if(!dimensions.isEmpty){
-        for dimension in dimensions {
-            matomoTracker?.set(dimension:dimension )
-        }
+func setActionCustomDimension(dimensions: [CustomDimension], matomoTracker: MatomoTracker?) {
+    
+    for dimension in dimensions {
+        matomoTracker?.set(dimension: dimension)
     }
 }
