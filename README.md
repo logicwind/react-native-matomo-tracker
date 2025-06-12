@@ -505,7 +505,7 @@ trackCustomDimension({
 
 ```
 
-### trackCustomDimension()
+### trackGoal()
 
 With trackGoal, you can track when a visitor completes a specific objective on your website, such as signing up for a newsletter, completing a purchase, or clicking a call-to-action. Each goal is defined in the Matomo dashboard with a unique Goal ID, and can optionally include a revenue value to track the monetary impact of conversions.
 
